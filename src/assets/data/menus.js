@@ -134,57 +134,57 @@ const menus = [{
 		}
 	]
   },
- //  {
-	// "menu_id": "997714742409826304",
-	// "menu_pid": null,
-	// "name": "系统管理",
-	// "route_name": "systemmanage",
-	// "path": "/systemmanage",
-	// "icon": "system-icon",
-	// "sort": 4,
-	// "is_show": true,
-	// "children": [{
-	// 	"menu_id": "998401010542186496",
-	// 	"menu_pid": "997714742409826304",
-	// 	"name": "用户管理",
-	// 	"route_name": "usermanage",
-	// 	"path": "/usermanage",
-	// 	"icon": "",
-	// 	"sort": 1,
-	// 	"is_show": true
-	//   },
-	//   {
-	// 	"menu_id": "998401144487284736",
-	// 	"menu_pid": "997714742409826304",
-	// 	"name": "角色管理",
-	// 	"route_name": "rolemanage",
-	// 	"path": "/rolemanage",
-	// 	"icon": "",
-	// 	"sort": 2,
-	// 	"is_show": true
-	//   },
-	//   {
-	// 	"menu_id": "998403714739998720",
-	// 	"menu_pid": "997714742409826304",
-	// 	"name": "字典管理",
-	// 	"route_name": "dictmanage",
-	// 	"path": "/dictmanage",
-	// 	"icon": "",
-	// 	"sort": 3,
-	// 	"is_show": true
-	//   },
-	//   {
-	// 	"menu_id": "998404980811632640",
-	// 	"menu_pid": "997714742409826304",
-	// 	"name": "菜单管理",
-	// 	"route_name": "menumanage",
-	// 	"path": "/menumanage",
-	// 	"icon": "",
-	// 	"sort": 4,
-	// 	"is_show": true
-	//   }
-	// ]
- //  }
+  {
+	"menu_id": "997714742409826304",
+	"menu_pid": null,
+	"name": "系统管理",
+	"route_name": "systemmanage",
+	"path": "/systemmanage",
+	"icon": "system-icon",
+	"sort": 4,
+	"is_show": true,
+	"children": [{
+		"menu_id": "998401010542186496",
+		"menu_pid": "997714742409826304",
+		"name": "用户管理",
+		"route_name": "usermanage",
+		"path": "/usermanage",
+		"icon": "",
+		"sort": 1,
+		"is_show": true
+	  },
+	  {
+		"menu_id": "998401144487284736",
+		"menu_pid": "997714742409826304",
+		"name": "角色管理",
+		"route_name": "rolemanage",
+		"path": "/rolemanage",
+		"icon": "",
+		"sort": 2,
+		"is_show": true
+	  },
+	  {
+		"menu_id": "998403714739998720",
+		"menu_pid": "997714742409826304",
+		"name": "字典管理",
+		"route_name": "dictmanage",
+		"path": "/dictmanage",
+		"icon": "",
+		"sort": 3,
+		"is_show": true
+	  },
+	  {
+		"menu_id": "998404980811632640",
+		"menu_pid": "997714742409826304",
+		"name": "菜单管理",
+		"route_name": "menumanage",
+		"path": "/menumanage",
+		"icon": "",
+		"sort": 4,
+		"is_show": true
+	  }
+	]
+  }
 ]
 
 export default menus
