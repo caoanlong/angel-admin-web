@@ -6,8 +6,8 @@ import 'normalize.css/normalize.css'
 
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import './assets/styles/index.css'
-import './assets/styles/sidebar.css'
+import './assets/styles/index.styl'
+import './assets/styles/sidebar.styl'
 
 import App from './App'
 import router from './router'
@@ -30,7 +30,7 @@ Vue.use(globals)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
-new Vue({
+export const vueInstance = new Vue({
 	el: '#app',
 	router,
 	store,

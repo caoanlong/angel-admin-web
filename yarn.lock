@@ -2071,6 +2071,10 @@ execa@^0.7.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
+exif-js@^2.3.0:
+  version "2.3.0"
+  resolved "http://registry.npm.taobao.org/exif-js/download/exif-js-2.3.0.tgz#9d10819bf571f873813e7640241255ab9ce1a814"
+
 expand-brackets@^0.1.4:
   version "0.1.5"
   resolved "http://registry.npm.taobao.org/expand-brackets/download/expand-brackets-0.1.5.tgz#df07284e342a807cd733ac5af72411e581d1177b"
@@ -5574,6 +5578,12 @@ vm-browserify@0.0.4:
 vue-count-to@^1.0.13:
   version "1.0.13"
   resolved "http://registry.npm.taobao.org/vue-count-to/download/vue-count-to-1.0.13.tgz#3e7573ea6e64c2b2972f64e0a2ab2e23c7590ff3"
+
+vue-cropper@^0.2.9:
+  version "0.2.9"
+  resolved "http://registry.npm.taobao.org/vue-cropper/download/vue-cropper-0.2.9.tgz#5c91ce2474788ad4d0e9bdac0b6032005dcb7898"
+  dependencies:
+    exif-js "^2.3.0"
 
 vue-hot-reload-api@^2.2.0:
   version "2.3.0"

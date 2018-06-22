@@ -7,9 +7,9 @@
 			</router-link>
 		</scroll-pane>
 		<ul class='contextmenu' v-show="visible" :style="{left:left+'px',top:top+'px'}">
-			<li @click="closeSelectedTag(selectedTag)">Close</li>
-			<li @click="closeOthersTags">Close Others</li>
-			<li @click="closeAllTags">Close All</li>
+			<li @click="closeSelectedTag(selectedTag)">关闭</li>
+			<li @click="closeOthersTags">关闭其他</li>
+			<li @click="closeAllTags">关闭所有</li>
 		</ul>
 	</div>
 </template>
@@ -69,7 +69,7 @@ export default {
 			const tags = this.$refs.tag
 			this.$nextTick(() => {
 				for (const tag of tags) {
-					if (tag.to === this.$route.path) {
+					if (tag.to.path === this.$route.path) {
 						this.$refs.scrollPane.moveToTarget(tag.$el)
 						break
 					}
@@ -80,7 +80,6 @@ export default {
 			this.$store.dispatch('delVisitedViews', view).then((views) => {
 				if (this.isActive(view)) {
 					const latestView = views.slice(-1)[0]
-					console.log(latestView)
 					if (latestView) {
 						this.$router.push({name: latestView.name, query: latestView.query})
 					} else {
@@ -103,7 +102,7 @@ export default {
 			this.visible = true
 			this.selectedTag = tag
 			this.left = e.clientX
-			this.top = e.clientY
+			this.top = 85
 		},
 		closeMenu() {
 			this.visible = false
@@ -150,7 +149,7 @@ export default {
 		margin 0
 		background #fff
 		z-index 2
-		position absolute
+		position fixed
 		list-style-type none
 		padding 5px 0
 		border-radius 4px

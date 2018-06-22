@@ -1,3 +1,6 @@
+import { Message } from 'element-ui'
+import { vueInstance } from '../main'
+
 /**author:Caoanlong *day:2017-08-24
  * form表单数据请求
  * @param json 请求参数 {key:value,key:value,...}
@@ -45,6 +48,21 @@ export function debounce(func, wait, immediate) {
 	}
 }
 
+export function getdatefromtimestamp (input, bool) {
+	let now = new Date(Number(input))
+	let year = now.getFullYear()
+	let month = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1
+	let date = now.getDate() < 10 ? '0' + now.getDate() : now.getDate()
+	let hour = now.getHours() < 10 ? '0' + now.getHours() : now.getHours()
+	let minute = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()
+	let second = now.getSeconds() < 10 ? '0' + now.getSeconds() : now.getSeconds()
+	if (bool) {
+		return year + "-" + month + "-" + date
+	}else {
+		return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second
+	}
+}
+
 /**author:Caoanlong *day:2018-04-23
  * 导入文件校验
  * @param result 导入的json结果
@@ -76,5 +94,60 @@ export function validUploadFile(result, map, propertys) {
 			uploadExcelConstants.push(excelConstant)
 		}
 		resolve(uploadExcelConstants)
+	})
+}
+
+/**
+ * 删除确认
+ * @param {单个id} id 
+ * @param {多个id} idList 
+ */
+export function deleteConfirm (id, callback, idList) {
+	let ids = ''
+	if (id && (typeof id == 'string' || typeof id == 'number')) {
+		ids = id
+	} else {
+		ids = idList.join(',')
+	}
+	if(!ids) {
+		Message({ type: 'warning', message: '请选择' })
+		return
+	}
+	vueInstance.$confirm('此操作将永久删除, 是否继续?', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		callback && callback(ids)
+	}).catch(() => {
+		Message({
+			type: 'info',
+			message: '已取消删除'
+		})
+	})
+}
+
+export function closeConfirm (id, callback) {
+	vueInstance.$confirm('此操作将关闭, 是否继续?', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		callback && callback(id)
+	}).catch(err => {
+		console.log(err)
+		Message({ type: 'info', message: '已取消关闭'})
+	})
+}
+
+export function cancelConfirm (id, callback) {
+	vueInstance.$confirm('此操作将做取消操作, 是否继续?', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		callback && callback(id)
+	}).catch(() => {
+		Message({ type: 'info', message: '已取消操作'})
 	})
 }
