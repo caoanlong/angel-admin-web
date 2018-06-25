@@ -17,7 +17,7 @@
 			<div class="addIcon">
 				<i style="font-size: 30px; position: relative; top: 10px" class="el-icon-plus avatar-uploader-icon"></i>
 			</div>
-			<input type="file" name="" @change.stop="addImg" ref="uploadFile"v-if="limitNum == 1"/>
+			<input type="file" name="" @change.stop="addImg" ref="uploadFile" v-if="limitNum == 1"/>
 			<input type="file" name="" @change.stop="addImgMultiple" ref="uploadFile" multiple="multiple" v-else/>
 		</div>
 		<el-dialog title="裁剪图片" :visible.sync="isShowCropper">

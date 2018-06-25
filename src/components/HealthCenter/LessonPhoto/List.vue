@@ -2,8 +2,8 @@
 	<div class="main-content">
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
-				<el-form-item label="关键字">
-					<el-input placeholder="用户名/手机号" v-model="find.keywords"></el-input>
+				<el-form-item label="标题">
+					<el-input placeholder="标题" v-model="find.title"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="getList">查询</el-button>
@@ -58,7 +58,7 @@ export default {
 			pageSize: 10,
 			count: 10,
 			find: {
-				keywords: ''
+				title: ''
 			},
 			list: []
 		}
@@ -75,7 +75,7 @@ export default {
 			this.pageSize = size
 		},
 		reset() {
-			this.find.keywords = ''
+			this.find.title = ''
 		},
 		getList() {
 			for (let i = 0; i < 10; i++) {
