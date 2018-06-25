@@ -2,6 +2,7 @@
 	<scroll-bar>
 		<el-menu 
 			mode="vertical" 
+			:unique-opened="true" 
 			:default-active="$route.name" 
 			:collapse="isCollapse" 
 			background-color="#304156" 

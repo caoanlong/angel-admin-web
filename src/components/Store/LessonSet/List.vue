@@ -1,5 +1,5 @@
 <template>
-    <div class="main-content">
+	<div class="main-content">
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="名称">
@@ -23,10 +23,10 @@
 		</div>
 		<div class="F-table">
 			<el-table 
-                :data="list" 
-                @selection-change="selectionChange" 
-                border style="width: 100%" 
-                size="mini" stripe>
+				:data="list" 
+				@selection-change="selectionChange" 
+				border style="width: 100%" 
+				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
 				<el-table-column prop="type" label="类型" align="center"></el-table-column>
@@ -51,7 +51,7 @@
 					</template>
 				</el-table-column>
 			</el-table>
-            <Page :total="count" :pageSize="pageSize" @pageChange="pageChange" @pageSizeChange="pageSizeChange"/>
+			<Page :total="count" :pageSize="pageSize" @pageChange="pageChange" @pageSizeChange="pageSizeChange"/>
 		</div>
 	</div>
 </template>
@@ -61,72 +61,72 @@ import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
 export default {
-    data() {
-        return {
-            pageIndex: 1,
-            pageSize: 10,
-            count: 10,
-            selectedList: [],
-            find: {
-                name: '',
-                type: ''
-            },
-            list: []
-        }
-    },
-    components: { Page },
-    created() {
-        this.getList()
-    },
-    methods: {
-        selectionChange(data) {
-            this.selectedList = data.map(item => item.id)
-        },
-        pageChange(index) {
-            this.pageIndex = index
-        },
-        pageSizeChange(size) {
-            this.pageSize = size
-        },
-        reset() {
-            this.find.name = ''
-            this.find.type = ''
-        },
-        getList() {
-            for (let i = 0; i < 10; i++) {
-                const item = {
-                    name: '正姿舞蹈',
-                    type: '48节课半年卡',
-                    price: 278,
-                    detail: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈',
-                    create_user: {
-                        name: '龙哥'
-                    },
-                    update_user: {
-                        name: '龙哥'
-                    }
-                }
-                item.id = i
-                item.create_time = new Date().getTime() + (i * 1000000)
-                item.update_time = new Date().getTime() + (i * 1000000)
-                this.list.push(item)
-            }
-        },
-        add() {
-            this.$router.push({name: 'addlesson'})
-        },
-        view() {
-            this.$router.push({name: 'viewlesson'})
-        },
-        edit() {
-            this.$router.push({name: 'editlesson'})
-        },
-        del() {
-            deleteConfirm('id', ids => {
-                Message.success('成功！')
-            })
-        },
-    }
+	data() {
+		return {
+			pageIndex: 1,
+			pageSize: 10,
+			count: 10,
+			selectedList: [],
+			find: {
+				name: '',
+				type: ''
+			},
+			list: []
+		}
+	},
+	components: { Page },
+	created() {
+		this.getList()
+	},
+	methods: {
+		selectionChange(data) {
+			this.selectedList = data.map(item => item.id)
+		},
+		pageChange(index) {
+			this.pageIndex = index
+		},
+		pageSizeChange(size) {
+			this.pageSize = size
+		},
+		reset() {
+			this.find.name = ''
+			this.find.type = ''
+		},
+		getList() {
+			for (let i = 0; i < 10; i++) {
+				const item = {
+					name: '正姿舞蹈',
+					type: '48节课半年卡',
+					price: 278,
+					detail: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈',
+					create_user: {
+						name: '龙哥'
+					},
+					update_user: {
+						name: '龙哥'
+					}
+				}
+				item.id = i
+				item.create_time = new Date().getTime() + (i * 1000000)
+				item.update_time = new Date().getTime() + (i * 1000000)
+				this.list.push(item)
+			}
+		},
+		add() {
+			this.$router.push({name: 'addlesson'})
+		},
+		view() {
+			this.$router.push({name: 'viewlesson'})
+		},
+		edit() {
+			this.$router.push({name: 'editlesson'})
+		},
+		del() {
+			deleteConfirm('id', ids => {
+				Message.success('成功！')
+			})
+		},
+	}
 }
 </script>
 

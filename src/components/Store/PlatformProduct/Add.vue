@@ -6,19 +6,19 @@
 				<el-row>
 					<el-col :span="10" :offset="6">
                         <el-form-item label="图片">
-							<ImageUpload :files="[lesson.image]" @imgUrlBack="handleImageSuccess" :fixed="true" />
+							<ImageUpload :files="[product.image]" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
 						<el-form-item label="名称">
-							<el-input v-model="lesson.name"></el-input>
+							<el-input v-model="product.name"></el-input>
 						</el-form-item>
                         <el-form-item label="运费">
-							<el-input v-model="lesson.express"></el-input>
+							<el-input v-model="product.express"></el-input>
 						</el-form-item>
                         <el-form-item label="价格">
-							<el-input v-model="lesson.price"></el-input>
+							<el-input v-model="product.price"></el-input>
 						</el-form-item>
                         <el-form-item label="详情">
-							<el-input type="textarea" v-model="lesson.detail"></el-input>
+							<el-input type="textarea" v-model="product.detail"></el-input>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -37,7 +37,7 @@ import ImageUpload from '../../CommonComponents/ImageUpload'
 export default {
     data() {
 		return {
-			lesson: {
+			product: {
                 image: '',
                 name: '',
                 price: '',

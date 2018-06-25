@@ -45,10 +45,46 @@ const router = new Router({
 							component: () => import ('../components/HealthCenter/LessonPhoto/List'),
 						},
 						{
+							path: '/addlessonphoto',
+							name: 'addlessonphoto',
+							meta: { title: '添加课间剪影' },
+							component: () => import ('../components/HealthCenter/LessonPhoto/Add'),
+						},
+						{
+							path: '/editlessonphoto',
+							name: 'editlessonphoto',
+							meta: { title: '编辑课间剪影' },
+							component: () => import ('../components/HealthCenter/LessonPhoto/Edit'),
+						},
+						{
+							path: '/viewlessonphoto',
+							name: 'viewlessonphoto',
+							meta: { title: '查看课间剪影' },
+							component: () => import ('../components/HealthCenter/LessonPhoto/Info'),
+						},
+						{
 							path: '/healthrecord',
 							name: 'healthrecord',
 							meta: { title: '健康报告' },
 							component: () => import ('../components/HealthCenter/HealthRecord/List'),
+						},
+						{
+							path: '/addhealthrecord',
+							name: 'addhealthrecord',
+							meta: { title: '添加健康报告' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Add'),
+						},
+						{
+							path: '/edithealthrecord',
+							name: 'edithealthrecord',
+							meta: { title: '编辑健康报告' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Edit'),
+						},
+						{
+							path: '/viewhealthrecord',
+							name: 'viewhealthrecord',
+							meta: { title: '查看健康报告' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Info'),
 						},
 						{
 							path: '/teacheradvice',
@@ -57,11 +93,35 @@ const router = new Router({
 							component: () => import ('../components/HealthCenter/HealthRecord/List'),
 						},
 						{
+							path: '/addteacheradvice',
+							name: 'addteacheradvice',
+							meta: { title: '添加老师建议' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Add'),
+						},
+						{
+							path: '/editteacheradvice',
+							name: 'editteacheradvice',
+							meta: { title: '编辑老师建议' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Edit'),
+						},
+						{
+							path: '/viewteacheradvice',
+							name: 'viewteacheradvice',
+							meta: { title: '查看老师建议' },
+							component: () => import ('../components/HealthCenter/HealthRecord/Info'),
+						},
+						{
 							path: '/angelremark',
 							name: 'angelremark',
 							meta: { title: '天使留言' },
 							component: () => import ('../components/HealthCenter/AngelRemark/List'),
-						}
+						},
+						{
+							path: '/viewangelremark',
+							name: 'viewangelremark',
+							meta: { title: '查看天使留言' },
+							component: () => import ('../components/HealthCenter/AngelRemark/Info'),
+						},
 					]
 				},
 				{
@@ -135,16 +195,34 @@ const router = new Router({
 							component: () => import ('../components/Member/Member/List'),
 						},
 						{
+							path: '/viewmember',
+							name: 'viewmember',
+							meta: { title: '查看会员' },
+							component: () => import ('../components/Member/Member/Info'),
+						},
+						{
 							path: '/lesson',
 							name: 'lesson',
 							meta: { title: '会员课程' },
 							component: () => import ('../components/Member/Lesson/List'),
 						},
 						{
+							path: '/viewmemlesson',
+							name: 'viewmemlesson',
+							meta: { title: '查看会员课程' },
+							component: () => import ('../components/Member/Lesson/Info'),
+						},
+						{
 							path: '/order',
 							name: 'order',
 							meta: { title: '会员订单' },
 							component: () => import ('../components/Member/Order/List'),
+						},
+						{
+							path: '/viewmemorder',
+							name: 'viewmemorder',
+							meta: { title: '查看会员订单' },
+							component: () => import ('../components/Member/Order/Info'),
 						}
 					]
 				},
