@@ -2,8 +2,25 @@
 	<div class="main-content">
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
-				<el-form-item label="标题">
-					<el-input placeholder="标题" v-model="find.title"></el-input>
+				<el-form-item label="关键字">
+					<el-input placeholder="标题/学员/创建人" v-model="find.title"></el-input>
+				</el-form-item>
+				<el-form-item label="课程类型">
+					<el-select placeholder="请选择" v-model="find.lessonType">
+						<el-option label="正姿舞蹈" value="正姿舞蹈"></el-option>
+						<el-option label="正姿跆拳道" value="正姿跆拳道"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="上传时间">
+					<el-date-picker
+						v-model="rangeDate"
+						type="daterange" 
+						value-format="timestamp" 
+						range-separator="至"
+						start-placeholder="开始时间"
+						end-placeholder="结束时间"
+						@change="selectDateRange">
+					</el-date-picker>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="getList">查询</el-button>
@@ -22,6 +39,7 @@
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="title" label="标题" align="center"></el-table-column>
+				<el-table-column prop="studentName" label="学生" align="center"></el-table-column>
 				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
 				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
 				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
@@ -58,9 +76,13 @@ export default {
 			pageSize: 10,
 			count: 10,
 			find: {
-				title: ''
+				title: '',
+				lessonType: '',
+				startDate: '',
+				endDate: ''
 			},
-			list: []
+			list: [],
+			rangeDate: []
 		}
 	},
 	components: { Page },
@@ -68,6 +90,10 @@ export default {
 		this.getList()
 	},
 	methods: {
+		selectDateRange(date) {
+			this.find.startDate = date[0]
+			this.find.endDate = date[1]
+		},
 		pageChange(index) {
 			this.pageIndex = index
 		},
@@ -81,6 +107,7 @@ export default {
 			for (let i = 0; i < 10; i++) {
 				const item = {
 					title: '正姿中心摄影',
+					studentName: '小明',
 					create_user: {
 						name: '龙哥'
 					},

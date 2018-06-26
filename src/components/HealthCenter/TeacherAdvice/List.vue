@@ -5,6 +5,17 @@
 				<el-form-item label="关键字">
 					<el-input placeholder="建议/会员/老师" v-model="find.keywords"></el-input>
 				</el-form-item>
+				<el-form-item label="创建时间">
+					<el-date-picker
+						v-model="rangeDate"
+						type="daterange" 
+						value-format="timestamp" 
+						range-separator="至"
+						start-placeholder="开始时间"
+						end-placeholder="结束时间"
+						@change="selectDateRange">
+					</el-date-picker>
+				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="getList">查询</el-button>
 					<el-button type="default" @click="reset">重置</el-button>
@@ -60,9 +71,12 @@ export default {
 			pageSize: 10,
 			count: 10,
 			find: {
-				keywords: ''
+				keywords: '',
+				startDate: '',
+				endDate: ''
 			},
-			list: []
+			list: [],
+			rangeDate: []
 		}
 	},
 	components: { Page },
@@ -70,6 +84,10 @@ export default {
 		this.getList()
 	},
 	methods: {
+		selectDateRange(date) {
+			this.find.startDate = date[0]
+			this.find.endDate = date[1]
+		},
 		pageChange(index) {
 			this.pageIndex = index
 		},

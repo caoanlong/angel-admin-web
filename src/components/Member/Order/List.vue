@@ -11,8 +11,8 @@
 						type="daterange" 
 						value-format="timestamp" 
 						range-separator="至"
-						start-placeholder="开始日期"
-						end-placeholder="结束日期"
+						start-placeholder="开始时间"
+						end-placeholder="结束时间"
 						@change="selectDateRange">
 					</el-date-picker>
 				</el-form-item>
@@ -32,7 +32,12 @@
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
 				<el-table-column prop="info" label="描述" align="center"></el-table-column>
 				<el-table-column prop="price" label="价格" align="center"></el-table-column>
-				<el-table-column prop="status" label="状态" align="center"></el-table-column>
+				<el-table-column prop="status" label="状态" align="center">
+					<template slot-scope="scope">
+						<el-tag size="mini" type="info" v-if="scope.row.status == '支付失败'">支付失败</el-tag>
+						<el-tag size="mini" type="success" v-else>支付成功</el-tag>
+					</template>
+				</el-table-column>
 				<el-table-column prop="sale_time" label="下单时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
@@ -43,7 +48,7 @@
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="180" align="center" fixed="right">
+				<el-table-column width="80" align="center" fixed="right">
 					<template slot-scope="scope">
 						<el-button type="success" size="mini" @click="view()">查看</el-button>
 					</template>

@@ -4,7 +4,7 @@
 		:style="{'width': width+'px','height': height+'px'}" 
 		v-for="(file,i) in fileUrl"
 		:key="i">
-			<img v-if="file && (file.indexOf('http') == -1)" :src="imgUrl + file">
+			<img v-if="file" :src="imgUrl + file">
 			<img v-else :src="defaultImg">
 			<div class="controller">
 				<div class="controllerBtn">

@@ -20,11 +20,8 @@
                         <el-form-item label="报告日期">
                             <p>{{record.record_date | getdatefromtimestamp(true)}}</p>
                         </el-form-item>
-						<el-form-item label="缩略图">
-							<ImageUpload :files="[record.image]" :isPreview="true"/>
-						</el-form-item>
                         <el-form-item label="报告图">
-							<ImageUpload :files="record.recordImage" :limit="10" :isPreview="true"/>
+							<ImageUpload :files="record.file" :isPreview="true"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -49,7 +46,7 @@ export default {
                 type: '筛查报告',
                 record_date: new Date(),
                 image: '#',
-                recordImage: ['#', '#']
+                file: ['#', '#']
 			}
 		}
 	},

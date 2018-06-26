@@ -8,8 +8,11 @@
 						<el-form-item label="标题">
 							<p>{{lessonPhoto.title}}</p>
 						</el-form-item>
+						<el-form-item label="学生">
+							<p>{{lessonPhoto.studentName}}</p>
+						</el-form-item>
 						<el-form-item label="图片">
-							<ImageUpload :files="lessonPhoto.image" :limit="10" :isPreview="true"/>
+							<ImageUpload :files="lessonPhoto.image" :isPreview="true"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -28,6 +31,7 @@ export default {
 		return {
 			lessonPhoto: {
 				title: '正姿中心摄影',
+				studentName: '小明',
 				image: ['#', '#', '#']
 			}
 		}

@@ -17,6 +17,9 @@
                         <el-form-item label="价格">
 							<el-input v-model="lesson.price"></el-input>
 						</el-form-item>
+						<el-form-item label="课时数">
+							<el-input v-model="lesson.num"></el-input>
+						</el-form-item>
                         <el-form-item label="使用有效期">
 							<el-select style="width:100%" placeholder="请选择" v-model="lesson.expiryDate">
                                 <el-option label="1个月" :value="1"></el-option>
@@ -48,7 +51,8 @@ export default {
                 image: '#',
                 name: '正姿舞蹈',
                 type: '48节课半年卡',
-                price: 278,
+				price: 278,
+				num: 48,
                 expiryDate: 6,
                 detail: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈'
             }

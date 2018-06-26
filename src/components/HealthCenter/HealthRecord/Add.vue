@@ -4,18 +4,33 @@
 			<div slot="header">添加健康报告</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="12" :offset="5">
 						<el-form-item label="名称">
-							<el-input v-model="record.name"></el-input>
+							<el-input placeholder="请输入..." v-model="record.name"></el-input>
 						</el-form-item>
                         <el-form-item label="会员">
-							<el-input v-model="record.member"></el-input>
+							<el-autocomplete style="width:100%"
+								value-key="name" 
+								v-model="record.memberName"
+								:fetch-suggestions="getMembers"
+								placeholder="请输入..."
+								@select="handSelectMember">
+							</el-autocomplete>
 						</el-form-item>
                         <el-form-item label="老师">
-							<el-input v-model="record.teacher"></el-input>
+							<el-autocomplete style="width:100%"
+								value-key="name" 
+								v-model="record.teacherName"
+								:fetch-suggestions="getTeachers"
+								placeholder="请输入..."
+								@select="handSelectTeacher">
+							</el-autocomplete>
 						</el-form-item>
                         <el-form-item label="类型">
-							<el-input v-model="record.type"></el-input>
+							<el-select style="width:100%" placeholder="请选择" v-model="record.type">
+								<el-option label="筛查报告" value="筛查报告"></el-option>
+								<el-option label="检测报告" value="检测报告"></el-option>
+							</el-select>
 						</el-form-item>
                         <el-form-item label="报告日期">
                             <el-date-picker
@@ -25,11 +40,8 @@
                                 value-format="timestamp">
                             </el-date-picker>
                         </el-form-item>
-						<el-form-item label="缩略图">
-							<ImageUpload :files="[record.image]" @imgUrlBack="handleImageSuccess" :fixed="true" :isUseCropper="true"/>
-						</el-form-item>
-                        <el-form-item label="报告图">
-							<ImageUpload :files="record.recordImage" :limit="10" @imgUrlBack="handleRecordImageSuccess" :fixed="true" />
+                        <el-form-item label="报告文件">
+							<ImageUpload :files="record.file" :limitNum="10" @imgUrlBack="handleRecordSuccess"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -50,26 +62,46 @@ export default {
 		return {
 			record: {
 				name: '',
-                member: '',
-                teacher: '',
+                memberName: '',
+                teacherName: '',
                 type: '',
                 record_date: '',
-                image: '',
-                recordImage: []
+                file: []
 			}
 		}
 	},
 	components: { ImageUpload },
 	methods: {
+		getMembers(queryString, cb) {
+			let list = [
+				{ id: 1, name: '小明' },
+				{ id: 2, name: '小花' },
+				{ id: 3, name: '狗蛋' }
+			]
+			setTimeout(() => { cb(list) }, 500)
+		},
+		getTeachers(queryString, cb) {
+			let list = [
+				{ id: 1, name: '王老师' },
+				{ id: 2, name: '张老师' },
+				{ id: 3, name: '苟老师' }
+			]
+			setTimeout(() => { cb(list) }, 500)
+		},
+		handSelectMember(data) {
+			this.record.memberId = data.id
+			this.record.memberName = data.name
+		},
+		handSelectTeacher(data) {
+			this.record.teacherId = data.id
+			this.record.teacherName = data.name
+		},
 		save() {
 			Message.success('成功！')
 			this.$router.push({name: 'healthrecord'})
 		},
-		handleImageSuccess(res) {
-			this.record.image = res[0]
-        },
-        handleRecordImageSuccess(res) {
-			this.record.recordImage = res
+        handleRecordSuccess(res) {
+			this.record.file = res
 		},
 		back() {
 			this.$router.go(-1)
