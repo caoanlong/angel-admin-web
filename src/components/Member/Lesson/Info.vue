@@ -4,7 +4,7 @@
 			<div slot="header">查看会员课程</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="会员">
 							<p>{{memLesson.memberName}}</p>
 						</el-form-item>

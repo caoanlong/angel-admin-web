@@ -109,7 +109,7 @@ const menus = [{
 			"route_name": "member",
 			"path": "/member",
 			"icon": "",
-			"sort": 2,
+			"sort": 1,
 			"is_show": true
 		},
 		{
@@ -128,6 +128,48 @@ const menus = [{
 			"name": "会员订单",
 			"route_name": "order",
 			"path": "/order",
+			"icon": "",
+			"sort": 3,
+			"is_show": true
+		},
+		{
+			"menu_id": "997712280487596055",
+			"menu_pid": null,
+			"name": "会员考勤",
+			"route_name": "attendance",
+			"path": "/attendance",
+			"icon": "",
+			"sort": 4,
+			"is_show": true
+		}
+	]
+  },
+  {
+	"menu_id": "997717173109657450",
+	"menu_pid": null,
+	"name": "人员管理",
+	"route_name": "personmanage",
+	"path": "/personmanage",
+	"icon": "certification-icon",
+	"sort": 3,
+	"is_show": true,
+	"children": [
+		{
+			"menu_id": "997712280487577039",
+			"menu_pid": null,
+			"name": "老师列表",
+			"route_name": "teacher",
+			"path": "/teacher",
+			"icon": "",
+			"sort": 1,
+			"is_show": true
+		},
+		{
+			"menu_id": "997712280487577139",
+			"menu_pid": null,
+			"name": "医生列表",
+			"route_name": "doctor",
+			"path": "/doctor",
 			"icon": "",
 			"sort": 2,
 			"is_show": true

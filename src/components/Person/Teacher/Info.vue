@@ -1,18 +1,21 @@
 <template>
 	<div class="main-content">
 		<el-card class="box-card">
-			<div slot="header">查看老师建议</div>
+			<div slot="header">查看老师</div>
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="14" :offset="4">
-                        <el-form-item label="会员">
-                            <p>{{advice.member}}</p>
+						<el-form-item label="头像">
+							<ImageUpload :files="[teacher.avatar]" :isPreview="true"/>
 						</el-form-item>
-                        <el-form-item label="老师">
-                            <p>{{advice.teacher}}</p>
+						<el-form-item label="姓名">
+							<p>{{teacher.name}}</p>
 						</el-form-item>
-                        <el-form-item label="建议">
-                            <p>{{advice.remark}}</p>
+						<el-form-item label="手机号">
+							<p>{{teacher.mobile}}</p>
+						</el-form-item>
+						<el-form-item label="简介">
+							<p>{{teacher.remark}}</p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -26,16 +29,19 @@
 
 <script>
 import { Message } from 'element-ui'
+import ImageUpload from '../../CommonComponents/ImageUpload'
 export default {
 	data() {
 		return {
-			advice: {
-                member: '小明',
-                teacher: '大毛',
-                remark: '治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时'
+			teacher: {
+				avatar: '#',
+				name: '陈老师',
+				mobile: '15023235656',
+				remark: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈'
 			}
 		}
 	},
+	components: { ImageUpload },
 	methods: {
 		back() {
 			this.$router.go(-1)

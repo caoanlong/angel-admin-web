@@ -4,7 +4,7 @@
 			<div slot="header">添加老师建议</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="12" :offset="5">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="会员">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
@@ -48,6 +48,9 @@ export default {
                 remark: ''
 			}
 		}
+	},
+	created() {
+		if (this.$route.query.name) this.advice.memberName = this.$route.query.name
 	},
 	methods: {
 		getMembers(queryString, cb) {

@@ -3,9 +3,9 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="用户名/手机号" v-model="find.keywords"></el-input>
+					<el-input placeholder="姓名/手机号" v-model="find.keyword"></el-input>
 				</el-form-item>
-				<el-form-item label="注册时间">
+				<el-form-item label="创建时间">
 					<el-date-picker
 						v-model="createRangeDate"
 						type="daterange" 
@@ -22,26 +22,37 @@
 				</el-form-item>
 			</el-form>
 		</div>
+		<div class="tableControl">
+			<el-button type="default" size="mini" icon="el-icon-plus" @click="add">添加</el-button>
+			<el-button type="default" size="mini" icon="el-icon-delete" @click="del">批量删除</el-button>
+		</div>
 		<div class="F-table">
 			<el-table 
 				:data="list" 
+				@selection-change="selectionChange" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column prop="name" label="学员名" align="center"></el-table-column>
-				<el-table-column prop="father" label="家长姓名" align="center"></el-table-column>
+				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
+				<el-table-column prop="name" label="姓名" align="center"></el-table-column>
 				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
-				<el-table-column prop="create_time" label="注册时间" align="center"  width="140">
+				<el-table-column prop="remark" label="简介" align="center"></el-table-column>
+				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
+				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
+				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column width="320" align="center" fixed="right">
+				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+					<template slot-scope="scope">
+						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+					</template>
+				</el-table-column>
+				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
 						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="warning" size="mini" @click="disable()">禁用</el-button>
-						<el-button type="primary" size="mini" @click="sendReport(scope.row.name)">发送报告</el-button>
-						<el-button type="primary" size="mini" @click="sendPhoto(scope.row.name)">发送剪影</el-button>
-						<el-button type="primary" size="mini" @click="teacherAdvice(scope.row.name)">老师建议</el-button>
+						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del()">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -53,14 +64,16 @@
 <script>
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
+import { deleteConfirm } from '../../../common/utils'
 export default {
 	data() {
 		return {
 			pageIndex: 1,
 			pageSize: 10,
 			count: 10,
+			selectedList: [],
 			find: {
-				keywords: '',
+				keyword: '',
 				startDate: '',
 				endDate: ''
 			},
@@ -77,6 +90,9 @@ export default {
 			this.find.startDate = date[0]
 			this.find.endDate = date[1]
 		},
+		selectionChange(data) {
+			this.selectedList = data.map(item => item.id)
+		},
 		pageChange(index) {
 			this.pageIndex = index
 		},
@@ -84,36 +100,41 @@ export default {
 			this.pageSize = size
 		},
 		reset() {
-			this.find.keywords = ''
+			this.find.keyword = ''
 		},
 		getList() {
 			for (let i = 0; i < 10; i++) {
 				const item = {
-					name: '小明',
-					father: '王大锤（父亲）',
-					mobile: '15036366969',
-					openid: 'wxlljffkjflhklkhlkh'
+					name: '陈老师',
+					mobile: '15023235656',
+					remark: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈',
+					create_user: {
+						name: '龙哥'
+					},
+					update_user: {
+						name: '龙哥'
+					}
 				}
 				item.id = i
 				item.create_time = new Date().getTime() + (i * 1000000)
+				item.update_time = new Date().getTime() + (i * 1000000)
 				this.list.push(item)
 			}
 		},
+		add() {
+			this.$router.push({name: 'addteacher'})
+		},
 		view() {
-			this.$router.push({name: 'viewmember'})
+			this.$router.push({name: 'viewteacher'})
 		},
-		disable() {
-			
+		edit() {
+			this.$router.push({name: 'editteacher'})
 		},
-		sendReport(name) {
-			this.$router.push({name: 'addhealthrecord', query: { name }})
+		del() {
+			deleteConfirm('id', ids => {
+				Message.success('成功！')
+			})
 		},
-		sendPhoto(name) {
-			this.$router.push({name: 'addlessonphoto', query: { name }})
-		},
-		teacherAdvice(name) {
-			this.$router.push({name: 'addteacheradvice', query: { name }})
-		}
 	}
 }
 </script>

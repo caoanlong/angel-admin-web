@@ -4,7 +4,7 @@
 			<div slot="header">添加角色</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="角色名称">
 							<el-input v-model="role.name"></el-input>
 						</el-form-item>

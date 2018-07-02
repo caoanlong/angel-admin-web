@@ -4,7 +4,7 @@
 			<div slot="header">查看会员</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="用户名">
 							<p>{{member.name}}</p>
 						</el-form-item>
@@ -15,6 +15,9 @@
 							<p>{{member.openid}}</p>
 						</el-form-item>
 						<el-form-item>
+							<el-button type="primary" @click="sendReport(member.name)">发送报告</el-button>
+							<el-button type="primary" @click="sendPhoto(member.name)">发送剪影</el-button>
+							<el-button type="primary" @click="teacherAdvice(member.name)">老师建议</el-button>
 							<el-button @click="back">返回</el-button>
 						</el-form-item>
 					</el-col>
@@ -36,6 +39,15 @@ export default {
 		}
 	},
 	methods: {
+		sendReport(name) {
+			this.$router.push({name: 'addhealthrecord', query: { name }})
+		},
+		sendPhoto(name) {
+			this.$router.push({name: 'addlessonphoto', query: { name }})
+		},
+		teacherAdvice(name) {
+			this.$router.push({name: 'addteacheradvice', query: { name }})
+		},
 		back() {
 			this.$router.go(-1)
 		}

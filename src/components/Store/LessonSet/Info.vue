@@ -4,7 +4,7 @@
 			<div slot="header">查看课程</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="18" :offset="2">
                         <el-form-item label="图片">
 							<ImageUpload :files="[lesson.image]" :isPreview="true"/>
 						</el-form-item>
@@ -21,7 +21,7 @@
 							<p>{{lesson.expiryDate}}</p>
 						</el-form-item>
                         <el-form-item label="详情">
-							<p>{{lesson.detail}}</p>
+							<p v-html="lesson.detail"></p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>

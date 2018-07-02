@@ -4,7 +4,7 @@
 			<div slot="header">添加产品</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="18" :offset="2">
                         <el-form-item label="图片">
 							<ImageUpload :files="[product.image]" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
@@ -18,7 +18,7 @@
 							<el-input v-model="product.price"></el-input>
 						</el-form-item>
                         <el-form-item label="详情">
-							<el-input type="textarea" v-model="product.detail"></el-input>
+							<div id="editor"></div>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -33,6 +33,7 @@
 
 <script>
 import { Message } from 'element-ui'
+import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 export default {
     data() {
@@ -47,6 +48,10 @@ export default {
 		}
     },
     components: { ImageUpload },
+    mounted() {
+		const editor = new E('#editor')
+		editor.create()
+	},
     methods: {
         save() {
             Message.success('成功！')

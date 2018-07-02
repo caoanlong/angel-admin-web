@@ -4,7 +4,7 @@
 			<div slot="header">编辑健康报告</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="12" :offset="5">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="名称">
 							<el-input placeholder="请输入..." v-model="record.name"></el-input>
 						</el-form-item>

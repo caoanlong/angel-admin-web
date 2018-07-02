@@ -4,7 +4,7 @@
 			<div slot="header">添加课程</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="18" :offset="2">
 						<el-form-item label="图片">
 							<ImageUpload :files="[lesson.image]" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
@@ -28,7 +28,7 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="详情">
-							<el-input type="textarea" v-model="lesson.detail"></el-input>
+							<div id="editor"></div>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -43,6 +43,7 @@
 
 <script>
 import { Message } from 'element-ui'
+import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 export default {
 	data() {
@@ -59,6 +60,10 @@ export default {
 		}
 	},
 	components: { ImageUpload },
+	mounted() {
+		const editor = new E('#editor')
+		editor.create()
+	},
 	methods: {
 		save() {
 			Message.success('成功！')
@@ -75,5 +80,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+#editor
+	min-width 700px
 </style>

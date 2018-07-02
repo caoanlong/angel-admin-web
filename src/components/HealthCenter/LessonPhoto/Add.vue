@@ -4,7 +4,7 @@
 			<div slot="header">添加课间剪影</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="标题">
 							<el-input v-model="lessonPhoto.title"></el-input>
 						</el-form-item>
@@ -45,6 +45,9 @@ export default {
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		if (this.$route.query.name) this.lessonPhoto.studentName = this.$route.query.name
+	},
 	methods: {
 		getStudents(queryString, cb) {
 			let list = [

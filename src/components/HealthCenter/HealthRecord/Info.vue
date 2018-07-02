@@ -4,7 +4,7 @@
 			<div slot="header">查看健康报告</div>
 			<el-form label-width="120px">
 				<el-row>
-					<el-col :span="10" :offset="6">
+					<el-col :span="14" :offset="4">
 						<el-form-item label="名称">
                             <p>{{record.name}}</p>
 						</el-form-item>

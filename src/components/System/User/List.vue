@@ -5,12 +5,29 @@
 				<el-form-item label="关键字">
 					<el-input placeholder="姓名/手机号" v-model="find.keyword"></el-input>
 				</el-form-item>
+                <el-form-item label="角色类型">
+                    <el-select placeholder="请选择" v-model="find.roleType" >
+                        <el-option label="管理员" :value="false"></el-option>
+                        <el-option label="业务员" :value="true"></el-option>
+                    </el-select>
+                </el-form-item>
 				<el-form-item label="状态">
 					<el-select placeholder="请选择" v-model="find.status" >
 						<el-option label="正常" :value="false"></el-option>
 						<el-option label="禁用" :value="true"></el-option>
 					</el-select>
 				</el-form-item>
+                <el-form-item label="创建时间">
+                    <el-date-picker
+                        v-model="createRangeDate"
+                        type="daterange" 
+                        value-format="timestamp" 
+                        range-separator="至"
+                        start-placeholder="开始时间"
+                        end-placeholder="结束时间"
+                        @change="selectDateRange">
+                    </el-date-picker>
+                </el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="getList">查询</el-button>
 					<el-button type="default" @click="reset">重置</el-button>
@@ -75,9 +92,13 @@ export default {
             selectedList: [],
             find: {
                 keyword: '',
-                status: ''
+                roleType: '',
+                status: '',
+                startDate: '',
+                endDate: ''
             },
-            list: []
+            list: [],
+            createRangeDate: []
         }
     },
     components: { Page },
@@ -85,6 +106,10 @@ export default {
         this.getList()
     },
     methods: {
+        selectDateRange(date) {
+            this.find.startDate = date[0]
+            this.find.endDate = date[1]
+        },
         selectionChange(data) {
             this.selectedList = data.map(item => item.id)
         },
