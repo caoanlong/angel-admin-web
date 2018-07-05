@@ -150,7 +150,7 @@
 				})
 			},
 			uploadFile(data, cb) {
-				let url = 'http://47.106.171.37:3000/image/upload/single'
+				let url = `${this.imgApi}/upload/single`
 				let headers = {'Content-type':'multipart/form-data;charset=UTF-8'}
 				let params = formDataReq({
 					"file": data

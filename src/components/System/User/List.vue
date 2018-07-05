@@ -48,29 +48,29 @@
 				<el-table-column prop="name" label="姓名"></el-table-column>
 				<el-table-column prop="mobile" label="电话" align="center" width="100"></el-table-column>
 				<el-table-column prop="sys_role.name" label="角色" align="center"></el-table-column>
-				<el-table-column prop="is_disabled" label="状态" align="center" width="60">
+				<el-table-column prop="isDisabled" label="状态" align="center" width="60">
 					<template slot-scope="scope">
-						<el-tag size="mini" type="info" v-if="scope.row.is_disabled">禁用</el-tag>
+						<el-tag size="mini" type="info" v-if="scope.row.isDisabled">禁用</el-tag>
 						<el-tag size="mini" type="success" v-else>正常</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createUser.name" label="创建人" align="center"></el-table-column>
+				<el-table-column prop="updateUser.name" label="更新人" align="center"></el-table-column>
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.userId)" v-if="scope.row.name != 'admin'">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.userId)" v-if="scope.row.name != 'admin'">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.userId)" v-if="scope.row.name != 'admin'">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -83,19 +83,20 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import SysUser from '../../../api/SysUser'
 export default {
     data() {
         return {
             pageIndex: 1,
             pageSize: 10,
-            count: 10,
+            count: 0,
             selectedList: [],
             find: {
                 keyword: '',
                 roleType: '',
                 status: '',
-                startDate: '',
-                endDate: ''
+                startTime: '',
+                endTime: ''
             },
             list: [],
             createRangeDate: []
@@ -107,58 +108,54 @@ export default {
     },
     methods: {
         selectDateRange(date) {
-            this.find.startDate = date[0]
-            this.find.endDate = date[1]
+            this.find.startTime = date[0]
+            this.find.endTime = date[1]
         },
         selectionChange(data) {
             this.selectedList = data.map(item => item.id)
         },
         pageChange(index) {
             this.pageIndex = index
+            this.getList()
         },
         pageSizeChange(size) {
             this.pageSize = size
+            this.getList()
         },
         reset() {
             this.find.keyword = ''
+            this.find.roleType = ''
             this.find.status = ''
+            this.getList()
         },
         getList() {
-            for (let i = 0; i < 10; i++) {
-                const item = {
-                    name: '张三',
-                    mobile: '13026261414',
-                    sys_role: {
-                        name: '管理员'
-                    },
-                    is_disabled: false,
-                    create_user: {
-                        name: '龙哥'
-                    },
-                    update_user: {
-                        name: '龙哥'
-                    }
-                }
-                item.id = i
-                item.create_time = new Date().getTime() + (i * 1000000)
-                item.update_time = new Date().getTime() + (i * 1000000)
-                this.list.push(item)
-            }
+            SysUser.find({
+                pageIndex: this.pageIndex,
+                pageSize: this.pageSize,
+                keyword: this.find.keyword,
+                roleId: this.find.roleType,
+                isDisabled: this.find.status,
+                startTime: this.find.startTime,
+                endTime: this.find.endTime,
+            }).then(res => {
+                this.list = res.rows
+                this.count = res.count
+            })
         },
         add() {
             this.$router.push({name: 'adduser'})
         },
-        view() {
-            this.$router.push({name: 'viewuser'})
+        view(userId) {
+            this.$router.push({name: 'viewuser', query: { userId }})
         },
-        edit() {
-            this.$router.push({name: 'edituser'})
+        edit(userId) {
+            this.$router.push({name: 'edituser', query: { userId }})
         },
-        del() {
-            deleteConfirm('id', ids => {
+        del(userId) {
+            deleteConfirm(userId, ids => {
                 Message.success('成功！')
             })
-        },
+        }
     }
 }
 </script>

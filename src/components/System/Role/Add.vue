@@ -21,6 +21,7 @@
 
 <script>
 import { Message } from 'element-ui'
+import SysRole from '../../../api/SysRole'
 export default {
     data() {
 		return {
@@ -29,8 +30,10 @@ export default {
     },
     methods: {
         save() {
-            Message.success('成功！')
-            this.$router.push({name: 'role'})
+			SysRole.add(this.role).then(res => {
+				Message.success(res.data.msg)
+            	this.$router.push({name: 'role'})
+			})
         },
         back() {
 			this.$router.go(-1)

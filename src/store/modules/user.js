@@ -1,14 +1,20 @@
-import { login, getUser, logout } from '../../api/login'
+import Auth from '../../api/Auth'
+
 const user = {
 	state: {
-		name: '',
+		name: localStorage.getItem('name'),
+		mobile: localStorage.getItem('mobile'),
 		token: localStorage.getItem('token'),
-		avatar: ''
+		avatar: localStorage.getItem('avatar')
 	},
 	mutations: {
 		SET_NAME: (state, name) => {
 			state.name = name
 			localStorage.setItem('name', name)
+		},
+		SET_MOBILE: (state, mobile) => {
+			state.mobile = mobile
+			localStorage.setItem('mobile', mobile)
 		},
 		SET_TOKEN: (state, token) => {
 			state.token = token
@@ -20,41 +26,27 @@ const user = {
 		}
 	},
 	actions: {
-		login ({ commit }, userInfo) {
-			const mobile = userInfo.mobile.trim()
-			const password = userInfo.password
-			return new Promise((resolve, reject) => {
-				login(mobile, password).then(response => {
-					const token = response.headers['x-access-token']
-					commit('SET_TOKEN', token)
-					resolve(response)
-				}).catch(error => {
-					reject(error)
-				})
-			})
+		login({ commit }, token) {
+			commit('SET_TOKEN', token)
 		},
-		logout({ commit, state }) {
+		logout({ commit }) {
 			return new Promise((resolve, reject) => {
-				logout().then(() => {
-					commit('SET_NAME', '')
-					commit('SET_AVATAR', '')
-					commit('SET_TOKEN', '')
-					localStorage.clear()
-					resolve()
-				}).catch(error => {
-					reject(error)
-				})
+				commit('SET_NAME', '')
+				commit('SET_MOBILE', '')
+				commit('SET_AVATAR', '')
+				commit('SET_TOKEN', '')
+				localStorage.clear()
+				sessionStorage.clear()
+				resolve()
 			})
 		},
 		getUserInfo({ commit } ) {
 			return new Promise((resolve, reject) => {
-				getUser().then(response => {
-					const data = response.data.data
-					commit('SET_NAME', data.name)
-					commit('SET_AVATAR', data.avatar)
+				Auth.info().then(res => {
+					commit('SET_NAME', res.data.data.name)
+					commit('SET_MOBILE', res.data.data.mobile)
+					commit('SET_AVATAR', res.data.data.avatar)
 					resolve()
-				}).catch(error => {
-					reject(error)
 				})
 			})
 		}

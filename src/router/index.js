@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css'// progress bar style
 Vue.use(Router)
 
 const router = new Router({
@@ -379,6 +380,28 @@ const router = new Router({
 			]
 		}
 	]
+})
+
+NProgress.configure({ showSpinner: false })// NProgress Configuration
+
+router.beforeEach((to, from, next) => {
+	NProgress.start()
+	if (localStorage.getItem('token') && localStorage.getItem('token') != 'undefined') {
+		if (to.path === '/login') {
+			next({ path: '/' })
+		} else {
+			next()
+		}
+		NProgress.done()
+	} else {
+		/* has no token*/
+		if (to.path === '/login') {
+			next()
+		} else {
+			next('/login')
+		}
+		NProgress.done()
+	}
 })
 
 export default router

@@ -34,23 +34,23 @@
                 size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="角色名称"></el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createUser.name" label="创建人" align="center"></el-table-column>
+				<el-table-column prop="updateUser.name" label="更新人" align="center"></el-table-column>
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.roleId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.roleId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.roleId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -63,17 +63,18 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import SysRole from '../../../api/SysRole'
 export default {
     data() {
         return {
             pageIndex: 1,
             pageSize: 10,
-            count: 10,
+            count: 0,
             selectedList: [],
             find: {
                 name: '',
-                startDate: '',
-                endDate: ''
+                startTime: '',
+                endTime: ''
             },
             list: [],
             createRangeDate: []
@@ -85,49 +86,47 @@ export default {
     },
     methods: {
         selectDateRange(date) {
-            this.find.startDate = date[0]
-            this.find.endDate = date[1]
+            this.find.startTime = date[0]
+            this.find.endTime = date[1]
         },
         selectionChange(data) {
             this.selectedList = data.map(item => item.id)
         },
         pageChange(index) {
             this.pageIndex = index
+            this.getList()
         },
         pageSizeChange(size) {
             this.pageSize = size
+            this.getList()
         },
         reset() {
             this.find.name = ''
+            this.getList()
         },
         getList() {
-            for (let i = 0; i < 5; i++) {
-                const item = {
-                    name: '管理员',
-                    create_user: {
-                        name: '龙哥'
-                    },
-                    update_user: {
-                        name: '龙哥'
-                    }
-                }
-                item.id = i
-                item.create_time = new Date().getTime() + (i * 1000000)
-                item.update_time = new Date().getTime() + (i * 1000000)
-                this.list.push(item)
-            }
+            SysRole.find({
+                pageIndex: this.pageIndex,
+                pageSize: this.pageSize,
+                name: this.find.name,
+                startTime: this.find.startTime,
+                endTime: this.find.endTime,
+            }).then(res => {
+                this.list = res.rows
+                this.count = res.count
+            })
         },
         add() {
             this.$router.push({name: 'addrole'})
         },
-        view() {
-            this.$router.push({name: 'viewrole'})
+        view(roleId) {
+            this.$router.push({name: 'viewrole', query: { roleId }})
         },
-        edit() {
-            this.$router.push({name: 'editrole'})
+        edit(roleId) {
+            this.$router.push({name: 'editrole', query: { roleId }})
         },
-        del() {
-            deleteConfirm('id', ids => {
+        del(roleId) {
+            deleteConfirm(roleId, ids => {
                 Message.success('成功！')
             })
         },

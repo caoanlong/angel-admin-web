@@ -19,13 +19,23 @@
 </template>
 
 <script>
+import SysRole from '../../../api/SysRole'
 export default {
     data() {
 		return {
-			role: { name: '管理员' }
+			role: { name: '' }
 		}
-    },
+	},
+	created() {
+		this.getInfo()
+	},
     methods: {
+		getInfo() {
+			const roleId = this.$route.query.roleId
+			SysRole.findById({ roleId }).then(res => {
+				this.role = res
+			})
+		},
         back() {
 			this.$router.go(-1)
 		}

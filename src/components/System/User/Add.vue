@@ -6,7 +6,7 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="头像">
-							<ImageUpload :files="[user.avatar]" @imgUrlBack="handleAvatarSuccess" :fixed="true" />
+							<ImageUpload :files="[user.avatar]" @imgUrlBack="handleAvatarSuccess" :fixed="true" :isUseCropper="true"/>
 						</el-form-item>
 						<el-form-item label="姓名">
 							<el-input v-model="user.name"></el-input>
@@ -18,12 +18,11 @@
 							<el-input v-model="user.password"></el-input>
 						</el-form-item>
 						<el-form-item label="是否禁用">
-							<el-switch v-model="user.is_disabled"></el-switch>
+							<el-switch v-model="user.isDisabled"></el-switch>
 						</el-form-item>
 						<el-form-item label="角色权限">
-							<el-select style="width: 100%" v-model="user.role_id" placeholder="请选择">
-								<el-option label="管理员" value="1"></el-option>
-								<el-option label="运营人员" value="2"></el-option>
+							<el-select style="width: 100%" v-model="user.roleId" placeholder="请选择">
+								<el-option v-for="role in roles" :key="role.roleId" :label="role.name" :value="role.roleId"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item>
@@ -40,6 +39,8 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import SysUser from '../../../api/SysUser'
+import SysRole from '../../../api/SysRole'
 export default {
     data() {
 		return {
@@ -47,21 +48,33 @@ export default {
 				name: '',
 				mobile: '',
 				password: '',
-				is_disabled: true,
-				role_id: '',
+				isDisabled: false,
+				roleId: '',
 				avatar: ''
 			},
 			roles: []
 		}
     },
-    components: { ImageUpload },
+	components: { ImageUpload },
+	created() {
+		this.getRoles()
+	},
     methods: {
         save() {
-            Message.success('成功！')
-            this.$router.push({name: 'user'})
+			SysUser.add(this.user).then(res => {
+				Message.success(res.data.msg)
+            	this.$router.push({name: 'user'})
+			})
         },
         handleAvatarSuccess(res) {
 			this.user.avatar = res[0]
+		},
+		getRoles() {
+            SysRole.find({
+                pageSize: 1000
+            }).then(res => {
+                this.roles = res.rows
+            })
         },
         back() {
 			this.$router.go(-1)

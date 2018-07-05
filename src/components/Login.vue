@@ -4,11 +4,11 @@
 			<div class="title-container">
 				<h3 class="title">天使无忧后台管理系统</h3>
 			</div>
-			<el-form-item prop="mobile">
+			<el-form-item prop="name">
 				<span class="svg-container svg-container_login">
 					<svg-icon icon-class="user"/>
 				</span>
-				<el-input name="mobile" type="text" v-model="loginForm.mobile" placeholder="请输入手机号" />
+				<el-input name="name" type="text" v-model="loginForm.name" placeholder="请输入用户名" />
 			</el-form-item>
 			<el-form-item prop="password">
 				<span class="svg-container">
@@ -24,59 +24,60 @@
 	</div>
 </template>
 <script type="text/javascript">
-	import { Message } from 'element-ui'
-	import { checkMobile } from '../common/validator'
-	export default {
-		data () {
-			return {
-				loginForm: {
-					mobile: '',
-					password: ''
-				},
-				loginRules: {
-					mobile: [
-						{ required: true, message: '手机号不能为空' },
-						{ validator: checkMobile }
-					],
-					password: [
-						{ required: true, message: '密码不能为空' },
-						{ min: 3, max: 20, message: '长度在 3 到 20 个字符' }
-					]
-				},
-				passwordType: 'password',
-				loading: false
+import { Message } from 'element-ui'
+import { checkMobile } from '../common/validator'
+import Auth from '../api/Auth'
+export default {
+	data () {
+		return {
+			loginForm: {
+				name: '',
+				password: ''
+			},
+			loginRules: {
+				name: [
+					{ required: true, message: '用户名不能为空' },
+					// { validator: checkMobile }
+				],
+				password: [
+					{ required: true, message: '密码不能为空' },
+					{ min: 3, max: 20, message: '长度在 3 到 20 个字符' }
+				]
+			},
+			passwordType: 'password',
+			loading: false
+		}
+	},
+	methods: {
+		showPwd() {
+			if (this.passwordType === 'password') {
+				this.passwordType = ''
+			} else {
+				this.passwordType = 'password'
 			}
 		},
-		methods: {
-			showPwd() {
-				if (this.passwordType === 'password') {
-					this.passwordType = ''
-				} else {
-					this.passwordType = 'password'
-				}
-			},
-			handleLogin() {
-				this.$refs.loginForm.validate(valid => {
-					if (valid) {
-						this.loading = true
-						this.$store.dispatch('login', this.loginForm).then(() => {
-							this.$store.dispatch('getUserInfo')
-							this.$store.dispatch('getMenu')
-							this.loading = false
-							Message.success('登录成功')
-							this.$router.push({ path: '/' })
-						}).catch((err) => {
-							console.log(err)
-							this.loading = false
-						})
-					} else {
-						console.log('error submit!!')
-						return false
-					}
+		handleLogin() {
+			this.$refs.loginForm.validate(valid => {
+				if (!valid) return
+				this.loading = true
+				Auth.login(this.loginForm).then(res => {
+					Message.success(res.data.msg)
+					new Promise((resolve, reject) => {
+						this.$store.dispatch('login', res.headers['x-access-token'])
+						resolve()
+					}).then(() => {
+						this.loading = false
+						this.$router.push({name: 'home'})
+						this.$store.dispatch('getUserInfo')
+						// this.$store.dispatch('getMenu')
+					})
+				}).catch(err => {
+					this.loading = false
 				})
-			},
-		}
+			})
+		},
 	}
+}
 </script>
 <style lang="stylus">
 	.login-container

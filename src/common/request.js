@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-import store from '../store'
 
 // create an axios instance
 const service = axios.create({
@@ -30,7 +29,7 @@ service.interceptors.response.use(
 				|| response.data.code == 104 ) {
 				localStorage.clear()
 				Message.error(response.data.msg)
-				window.location.href = '/login'
+				window.location.href = '/#/login'
 				return Promise.reject('error')
 			}
 			Message.error(response.data.msg)
@@ -39,11 +38,7 @@ service.interceptors.response.use(
 		return response
 	},
 	error => {
-		Message({
-			message: error.message,
-			type: 'error',
-			duration: 5 * 1000
-		})
+		Message.error(error.message.toString())
 		return Promise.reject(error)
 	})
 

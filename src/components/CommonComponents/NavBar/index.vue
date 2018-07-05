@@ -7,7 +7,7 @@
 			<el-dropdown class="avatar-container right-menu-item">
 				<div class="avatar-wrapper">
 					<img class="user-avatar" :src="avatar 
-						? imgUrlMini + avatar.split('uploads')[1] 
+						? imgUrl + avatar
 						: require('../../../assets/imgs/avatar.gif')">
 					<span class="user-text">你好！{{name}}</span>
 					<i class="el-icon-caret-bottom"></i>
@@ -54,7 +54,7 @@ export default {
 		},
 		logout() {
 			this.$store.dispatch('logout').then(() => {
-				this.$router.push({name: 'home'})
+				this.$router.push({name: 'login'})
 			})
 		}
 	}

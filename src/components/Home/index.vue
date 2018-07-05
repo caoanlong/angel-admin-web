@@ -1,14 +1,14 @@
 <template>
 	<div class="dashboard-editor-container">
 		<panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group>
-		<el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+		<!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
 			<line-chart :chart-data="lineChartData"></line-chart>
-		</el-row>
+		</el-row> -->
 	</div>
 </template>
 <script type="text/javascript">
 import PanelGroup from '../CommonComponents/PannelGroup'
-import LineChart from '../CommonComponents/LineChart'
+// import LineChart from '../CommonComponents/LineChart'
 const lineChartData = {
 	newVisitis: {
 		expectedData: [100, 120, 161, 134, 105, 160, 165],
@@ -41,7 +41,7 @@ export default {
 	},
 	components: {
 		PanelGroup,
-		LineChart
+		// LineChart
 	}
 }
 </script>
