@@ -69,7 +69,7 @@ export default {
 						this.loading = false
 						this.$router.push({name: 'home'})
 						this.$store.dispatch('getUserInfo')
-						// this.$store.dispatch('getMenu')
+						this.$store.dispatch('getMenu')
 					})
 				}).catch(err => {
 					this.loading = false

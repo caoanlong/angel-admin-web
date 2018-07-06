@@ -44,8 +44,6 @@
 				<el-table-column label="类型" prop="type"></el-table-column>
                 <el-table-column label="描述" prop="description"></el-table-column>
                 <el-table-column label="排序" prop="sort" align="center" width="60"></el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
 				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>

@@ -45,7 +45,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column width="250" align="center" fixed="right">
-					<template slot-scope="scope">
+					<template slot-scope="scope" v-if="scope.row.roleId != '1014694057894612992'">
 						<el-button type="warning" size="mini" @click="auth(scope.row.roleId)">权限设置</el-button>
 						<el-button type="success" size="mini" @click="view(scope.row.roleId)">查看</el-button>
 						<el-button type="primary" size="mini" @click="edit(scope.row.roleId)">编辑</el-button>
@@ -93,7 +93,7 @@ export default {
 			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.id)
+			this.selectedList = data.map(item => item.roleId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
@@ -105,6 +105,9 @@ export default {
 		},
 		reset() {
 			this.find.name = ''
+			this.find.startTime = ''
+            this.find.endTime = ''
+			this.createRangeDate = []
 			this.getList()
 		},
 		getList() {
@@ -123,7 +126,7 @@ export default {
 			this.showSetAuth = false
 			if (bool) {
 				this.getList()
-				// this.$store.dispatch('getMenu')
+				this.$store.dispatch('getMenu')
 			}
 		},
 		add() {
@@ -141,9 +144,12 @@ export default {
 		},
 		del(roleId) {
 			deleteConfirm(roleId, ids => {
-				Message.success('成功！')
-			})
-		},
+				SysRole.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
+		}
 	}
 }
 </script>

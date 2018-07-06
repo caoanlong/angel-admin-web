@@ -103,11 +103,11 @@ export function validUploadFile(result, map, propertys) {
  * @param {多个id} idList 
  */
 export function deleteConfirm (id, callback, idList) {
-	let ids = ''
+	let ids = []
 	if (id && (typeof id == 'string' || typeof id == 'number')) {
-		ids = id
+		ids = [id]
 	} else {
-		ids = idList.join(',')
+		ids = idList
 	}
 	if(!ids) {
 		Message({ type: 'warning', message: '请选择' })

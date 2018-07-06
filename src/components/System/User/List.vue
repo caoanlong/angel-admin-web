@@ -7,7 +7,7 @@
 				</el-form-item>
                 <el-form-item label="角色类型">
                     <el-select placeholder="请选择" v-model="find.roleType" >
-                        <el-option label="管理员" :value="false"></el-option>
+                        <el-option v-for="role in roles" :label="role.name" :value="role.roleId" :key="role.roleId"></el-option>
                         <el-option label="业务员" :value="true"></el-option>
                     </el-select>
                 </el-form-item>
@@ -82,6 +82,7 @@ import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
 import SysUser from '../../../api/SysUser'
+import SysRole from '../../../api/SysRole'
 export default {
     data() {
         return {
@@ -97,12 +98,14 @@ export default {
                 endTime: ''
             },
             list: [],
+            roles: [],
             createRangeDate: []
         }
     },
     components: { Page },
     created() {
         this.getList()
+        this.getRoles()
     },
     methods: {
         selectDateRange(date) {
@@ -124,6 +127,9 @@ export default {
             this.find.keyword = ''
             this.find.roleType = ''
             this.find.status = ''
+            this.find.startTime = ''
+            this.find.endTime = ''
+            this.createRangeDate = []
             this.getList()
         },
         getList() {
@@ -140,6 +146,13 @@ export default {
                 this.count = res.count
             })
         },
+        getRoles() {
+            SysRole.find({
+                pageSize: 1000
+            }).then(res => {
+				this.roles = res.rows
+            })
+        },
         add() {
             this.$router.push({name: 'adduser'})
         },
@@ -151,8 +164,11 @@ export default {
         },
         del(userId) {
             deleteConfirm(userId, ids => {
-                Message.success('成功！')
-            })
+				SysUser.del({ ids }).then(res => {
+                    Message.success('成功！')
+                    this.getList()
+				})
+			}, this.selectedList)
         }
     }
 }
