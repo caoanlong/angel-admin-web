@@ -7,8 +7,12 @@
 				</el-form-item>
                 <el-form-item label="类型">
 					<el-select placeholder="请选择" v-model="find.type">
-						<el-option label="商品购买状态(goodsStatus)" value="goodsStatus"></el-option>
-						<el-option label="用户状态(userStatus)" value="userStatus"></el-option>
+						<el-option 
+                            v-for="type in types" 
+                            :key="type.type"
+                            :label="type.description" 
+                            :value="type.type">
+                        </el-option>
 					</el-select>
 				</el-form-item>
                 <el-form-item label="创建时间">
@@ -44,21 +48,21 @@
 				<el-table-column label="类型" prop="type"></el-table-column>
                 <el-table-column label="描述" prop="description"></el-table-column>
                 <el-table-column label="排序" prop="sort" align="center" width="60"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.dictId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.dictId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.dictId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -71,6 +75,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import SysDict from '../../../api/SysDict'
 export default {
     data() {
         return {
@@ -81,21 +86,23 @@ export default {
             find: {
                 type: '',
                 description: '',
-                startDate: '',
-                endDate: ''
+                startTime: '',
+                endTime: ''
             },
             list: [],
+            types: [],
             createRangeDate: []
         }
     },
     components: { Page },
     created() {
         this.getList()
+        this.getTypes()
     },
     methods: {
         selectDateRange(date) {
-            this.find.startDate = date[0]
-            this.find.endDate = date[1]
+            this.find.startTime = date[0]
+            this.find.endTime = date[1]
         },
         selectionChange(data) {
             this.selectedList = data.map(item => item.id)
@@ -109,41 +116,48 @@ export default {
         reset() {
             this.find.type = ''
             this.find.description = ''
+			this.find.startTime = ''
+            this.find.endTime = ''
+            this.pageIndex = 1
+			this.pageSize = 10
+			this.createRangeDate = []
+			this.getList()
         },
         getList() {
-            for (let i = 0; i < 5; i++) {
-                const item = {
-                    key: '成功',
-                    value: 'success',
-                    type: 'goodsStatus',
-                    description: '商品购买状态',
-                    create_user: {
-                        name: '龙哥'
-                    },
-                    update_user: {
-                        name: '龙哥'
-                    }
-                }
-                item.id = i
-                item.create_time = new Date().getTime() + (i * 1000000)
-                item.update_time = new Date().getTime() + (i * 1000000)
-                this.list.push(item)
-            }
+            SysDict.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				type: this.find.type,
+				description: this.find.description,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
+        },
+        getTypes() {
+            SysDict.findTypeList().then(res => {
+                this.types = res
+            })
         },
         add() {
             this.$router.push({name: 'adddict'})
         },
-        view() {
-            this.$router.push({name: 'viewdict'})
+        view(dictId) {
+            this.$router.push({name: 'viewdict', query: { dictId } })
         },
-        edit() {
-            this.$router.push({name: 'editdict'})
+        edit(dictId) {
+            this.$router.push({name: 'editdict', query: { dictId } })
         },
-        del() {
-            deleteConfirm('id', ids => {
-                Message.success('成功！')
-            })
-        },
+        del(dictId) {
+            deleteConfirm(dictId, ids => {
+				SysDict.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
+        }
     }
 }
 </script>

@@ -6,7 +6,7 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="头像">
-							<ImageUpload :files="[doctor.avatar]" @imgUrlBack="handleAvatarSuccess" :fixed="true" />
+							<ImageUpload :files="[doctor.avatar]" @imgUrlBack="handleAvatarSuccess" :fixed="true" :isUseCropper="true"/>
 						</el-form-item>
 						<el-form-item label="姓名">
 							<el-input v-model="doctor.name"></el-input>
@@ -31,6 +31,7 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import Doctor from '../../../api/Doctor'
 export default {
 	data() {
 		return {
@@ -45,8 +46,10 @@ export default {
 	components: { ImageUpload },
 	methods: {
 		save() {
-			Message.success('成功！')
-			this.$router.push({name: 'doctor'})
+			Doctor.add(this.doctor).then(res => {
+				Message.success(res.data.msg)
+				this.$router.push({name: 'doctor'})
+			})
 		},
 		handleAvatarSuccess(res) {
 			this.doctor.avatar = res[0]

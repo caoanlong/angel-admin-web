@@ -30,19 +30,29 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import Teacher from '../../../api/Teacher'
 export default {
 	data() {
 		return {
 			teacher: {
-				avatar: '#',
-				name: '陈老师',
-				mobile: '15023235656',
-				remark: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈'
+				avatar: '',
+				name: '',
+				mobile: '',
+				remark: ''
 			}
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const teacherId = this.$route.query.teacherId
+			Teacher.findById({ teacherId }).then(res => {
+				this.teacher = res
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

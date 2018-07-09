@@ -33,7 +33,7 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center" width="180"></el-table-column>
+				<el-table-column prop="name" label="名称" align="center"></el-table-column>
 				<el-table-column prop="express" label="快递" align="center" width="70">
 					<template slot-scope="scope">
 						<span>{{scope.row.express == 0 ? '免运费' : scope.row.express}}</span>
@@ -41,16 +41,14 @@
 				</el-table-column>
 				<el-table-column prop="price" label="价格" align="center"></el-table-column>
 				<el-table-column prop="saleNum" label="月销" align="center"></el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">

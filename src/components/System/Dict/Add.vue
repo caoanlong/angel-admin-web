@@ -33,6 +33,7 @@
 
 <script>
 import { Message } from 'element-ui'
+import SysDict from '../../../api/SysDict'
 export default {
     data() {
 		return {
@@ -41,14 +42,16 @@ export default {
                 value: '',
                 type: '',
                 description: '',
-                sort: 1,
+                sort: 1
             }
 		}
     },
     methods: {
         save() {
-            Message.success('成功！')
-            this.$router.push({name: 'dict'})
+			SysDict.add(this.dict).then(res => {
+				Message.success(res.data.msg)
+            	this.$router.push({name: 'dict'})
+			})
         },
         back() {
 			this.$router.go(-1)

@@ -6,7 +6,7 @@
                 <el-row>
                     <el-col :span="14" :offset="4">
                         <el-form-item label="键">
-                            <p v-text="dict.name"></p>
+                            <p v-text="dict.key"></p>
                         </el-form-item>
                         <el-form-item label="值">
                             <p v-text="dict.value"></p>
@@ -31,19 +31,29 @@
 </template>
 
 <script>
+import SysDict from '../../../api/SysDict'
 export default {
     data() {
 		return {
 			dict: { 
-                key: '成功',
-                value: 'success',
-                type: 'goodsStatus',
-                description: '商品购买状态',
+                key: '',
+                value: '',
+                type: '',
+                description: '',
                 sort: 1,
             }
 		}
     },
+    created() {
+		this.getInfo()
+	},
     methods: {
+        getInfo() {
+			const dictId = this.$route.query.dictId
+			SysDict.findById({ dictId }).then(res => {
+				this.dict = res
+			})
+		},
         back() {
 			this.$router.go(-1)
 		}

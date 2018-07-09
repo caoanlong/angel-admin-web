@@ -30,19 +30,29 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import Doctor from '../../../api/Doctor'
 export default {
 	data() {
 		return {
 			doctor: {
-				avatar: '#',
-				name: '张医生',
-				mobile: '15026265656',
-				remark: '肩周按摩，解决酸痛'
+				avatar: '',
+				name: '',
+				mobile: '',
+				remark: ''
 			}
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const doctorId = this.$route.query.doctorId
+			Doctor.findById({ doctorId }).then(res => {
+				this.doctor = res
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

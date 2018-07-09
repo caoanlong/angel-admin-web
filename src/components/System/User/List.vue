@@ -7,8 +7,12 @@
 				</el-form-item>
                 <el-form-item label="角色类型">
                     <el-select placeholder="请选择" v-model="find.roleType" >
-                        <el-option v-for="role in roles" :label="role.name" :value="role.roleId" :key="role.roleId"></el-option>
-                        <el-option label="业务员" :value="true"></el-option>
+                        <el-option 
+                            v-for="role in roles" 
+                            :label="role.name" 
+                            :value="role.roleId" 
+                            :key="role.roleId">
+                        </el-option>
                     </el-select>
                 </el-form-item>
 				<el-form-item label="状态">

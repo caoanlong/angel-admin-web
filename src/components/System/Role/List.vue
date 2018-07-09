@@ -34,12 +34,12 @@
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="角色名称"></el-table-column>
-				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center">
 					<template slot-scope="scope">
 						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
@@ -106,7 +106,9 @@ export default {
 		reset() {
 			this.find.name = ''
 			this.find.startTime = ''
-            this.find.endTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
 			this.createRangeDate = []
 			this.getList()
 		},
@@ -116,7 +118,7 @@ export default {
 				pageSize: this.pageSize,
 				name: this.find.name,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime,
+				endTime: this.find.endTime
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count

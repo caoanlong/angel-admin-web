@@ -36,23 +36,21 @@
 				<el-table-column prop="name" label="姓名" align="center"></el-table-column>
 				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
 				<el-table-column prop="remark" label="简介" align="center"></el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.doctorId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.doctorId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.doctorId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -65,6 +63,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import Doctor from '../../../api/Doctor'
 export default {
 	data() {
 		return {
@@ -91,50 +90,54 @@ export default {
 			this.find.endDate = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.id)
+			this.selectedList = data.map(item => item.doctorId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
 			this.find.keyword = ''
+			this.find.startTime = ''
+            this.find.endTime = ''
+            this.pageIndex = 1
+			this.pageSize = 10
+			this.createRangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					name: '张医生',
-					mobile: '15023235656',
-					remark: '肩周按摩，解决酸痛',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
-				}
-				item.id = i
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			Doctor.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
 		add() {
 			this.$router.push({name: 'adddoctor'})
 		},
-		view() {
-			this.$router.push({name: 'viewdoctor'})
+		view(doctorId) {
+			this.$router.push({name: 'viewdoctor', query: { doctorId } })
 		},
-		edit() {
-			this.$router.push({name: 'editdoctor'})
+		edit(doctorId) {
+			this.$router.push({name: 'editdoctor', query: { doctorId } })
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
-			})
-		},
+		del(doctorId) {
+            deleteConfirm(doctorId, ids => {
+				Doctor.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
+        }
 	}
 }
 </script>
