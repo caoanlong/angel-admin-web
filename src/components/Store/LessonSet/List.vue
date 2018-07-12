@@ -6,9 +6,8 @@
 					<el-input placeholder="名称" v-model="find.name"></el-input>
 				</el-form-item>
 				<el-form-item label="类型">
-					<el-select placeholder="请选择" v-model="find.type">
-						<el-option label="48节课半年卡" value="48节课半年卡"></el-option>
-						<el-option label="96节课年卡" value="96节课年卡"></el-option>
+					<el-select placeholder="请选择" v-model="find.typeId">
+						<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="创建时间">
@@ -40,7 +39,7 @@
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
-				<el-table-column prop="type" label="类型" align="center"></el-table-column>
+				<el-table-column prop="type.value" label="类型" align="center"></el-table-column>
 				<el-table-column prop="price" label="价格" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
@@ -54,9 +53,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.lessonSetId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.lessonSetId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.lessonSetId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -69,6 +68,8 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import LessonSet from '../../../api/LessonSet'
+import SysDict from '../../../api/SysDict'
 export default {
 	data() {
 		return {
@@ -78,17 +79,19 @@ export default {
 			selectedList: [],
 			find: {
 				name: '',
-				type: '',
+				typeId: '',
 				startDate: '',
 				endDate: ''
 			},
 			list: [],
+			types: [],
 			createRangeDate: []
 		}
 	},
 	components: { Page },
 	created() {
 		this.getList()
+		this.getTypes()
 	},
 	methods: {
 		selectDateRange(date) {
@@ -96,50 +99,58 @@ export default {
 			this.find.endDate = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.id)
+			this.selectedList = data.map(item => item.lessonSetId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
 			this.find.name = ''
-			this.find.type = ''
+			this.find.typeId = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					name: '正姿舞蹈',
-					type: '48节课半年卡',
-					price: 278,
-					detail: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
-				}
-				item.id = i
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			LessonSet.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				name: this.find.name,
+				typeId: this.find.typeId,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
 		add() {
 			this.$router.push({name: 'addlesson'})
 		},
-		view() {
-			this.$router.push({name: 'viewlesson'})
+		view(lessonSetId) {
+			this.$router.push({name: 'viewlesson', query: { lessonSetId } })
 		},
-		edit() {
-			this.$router.push({name: 'editlesson'})
+		edit(lessonSetId) {
+			this.$router.push({name: 'editlesson', query: { lessonSetId } })
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
+		del(lessonSetId) {
+            deleteConfirm(lessonSetId, ids => {
+				LessonSet.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
+        },
+        getTypes() {
+			SysDict.findListByType({ type: 'lessonType' }).then(res => {
+				this.types = res
 			})
 		},
 	}

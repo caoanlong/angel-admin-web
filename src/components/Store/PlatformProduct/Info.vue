@@ -5,20 +5,23 @@
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="18" :offset="2">
-						<el-form-item label="图片">
-							<ImageUpload :files="[product.image]" :isPreview="true" />
-						</el-form-item>
 						<el-form-item label="名称">
 							<p>{{product.name}}</p>
 						</el-form-item>
 						<el-form-item label="运费">
-							<p>{{product.express}}</p>
+							<p>{{product.freight}}</p>
+						</el-form-item>
+						<el-form-item label="快递类型">
+							<p>{{product.expressType && product.expressType.value}}</p>
 						</el-form-item>
 						<el-form-item label="价格">
 							<p>{{product.price}}</p>
 						</el-form-item>
+						<el-form-item label="图片">
+							<ImageUpload :files="[product.image]" :isPreview="true"/>
+						</el-form-item>
 						<el-form-item label="详情">
-							<p v-html="product.detail"></p>
+							<p v-html="product.remark"></p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -33,20 +36,31 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import PlatformProduct from '../../../api/PlatformProduct'
 export default {
 	data() {
 		return {
 			product: {
-				image: '#',
-				name: '七彩虹GTX750Ti 2G限量版',
-				price: 278,
-				express: 0,
-				detail: '游戏发烧友必备游戏发烧友必备游戏发烧友必备游戏发烧友必备游戏发烧友必备'
+				image: '',
+				name: '',
+				freight: '',
+				expressTypeId: '',
+				price: '',
+				remark: ''
 			}
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const platformProductId = this.$route.query.platformProductId
+			PlatformProduct.findById({ platformProductId }).then(res => {
+				this.product = res
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

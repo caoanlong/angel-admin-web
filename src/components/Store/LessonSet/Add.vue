@@ -5,14 +5,18 @@
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="18" :offset="2">
-						<el-form-item label="图片">
-							<ImageUpload :files="[lesson.image]" @imgUrlBack="handleImageSuccess" :fixed="true" />
-						</el-form-item>
 						<el-form-item label="名称">
 							<el-input v-model="lesson.name"></el-input>
 						</el-form-item>
 						<el-form-item label="类型">
-							<el-input v-model="lesson.type"></el-input>
+							<el-select style="width: 100%" placeholder="请选择" v-model="lesson.typeId">
+								<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="使用有效期">
+							<el-select style="width:100%" placeholder="请选择" v-model="lesson.validityDate">
+								<el-option v-for="item in lessonValidityDates" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
+							</el-select>
 						</el-form-item>
 						<el-form-item label="价格">
 							<el-input v-model="lesson.price"></el-input>
@@ -20,12 +24,8 @@
 						<el-form-item label="课时数">
 							<el-input v-model="lesson.num"></el-input>
 						</el-form-item>
-						<el-form-item label="使用有效期">
-							<el-select style="width:100%" placeholder="请选择" v-model="lesson.expiryDate">
-								<el-option label="1个月" :value="1"></el-option>
-								<el-option label="6个月" :value="6"></el-option>
-								<el-option label="12个月" :value="12"></el-option>
-							</el-select>
+						<el-form-item label="图片">
+							<ImageUpload :files="[lesson.image]" @imgUrlBack="handleImageSuccess" :isUseCropper="true"/>
 						</el-form-item>
 						<el-form-item label="详情">
 							<div id="editor"></div>
@@ -45,32 +45,68 @@
 import { Message } from 'element-ui'
 import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import SysDict from '../../../api/SysDict'
+import LessonSet from '../../../api/LessonSet'
 export default {
 	data() {
 		return {
+			editor: null,
 			lesson: {
 				image: '',
 				name: '',
-				type: '',
+				typeId: '',
 				price: '',
 				num: '',
-				expiryDate: '',
-				detail: ''
-			}
+				validityDate: '',
+				remark: ''
+			},
+			types: [],
+			lessonValidityDates: []
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		this.getTypes()
+		this.getLessonValidityDates()
+	},
 	mounted() {
-		const editor = new E('#editor')
-		editor.create()
+		this.editor = new E('#editor')
+		this.editor.customConfig.zIndex = 100
+		this.editor.customConfig.uploadImgServer = `${this.imgApi}/upload/multiple`
+		this.editor.customConfig.uploadFileName = 'files'
+		this.editor.customConfig.uploadImgHooks = {
+			customInsert: (insertImg, result, editor) => {
+				result.data.forEach(item => {
+					insertImg(this.imgUrl + item)
+				})
+			}
+		}
+		this.editor.create()
+	},
+	beforeDestroy() {
+		this.editor = null
 	},
 	methods: {
 		save() {
-			Message.success('成功！')
-			this.$router.push({name: 'lessonset'})
+			const data = this.lesson
+			data.remark = this.editor.txt.html()
+			LessonSet.add(data).then(res => {
+				Message.success('成功！')
+				this.$router.push({name: 'lessonset'})
+			})
 		},
 		handleImageSuccess(res) {
 			this.lesson.image = res[0]
+		},
+		getTypes() {
+			SysDict.findListByType({ type: 'lessonType' }).then(res => {
+				this.types = res
+			})
+		},
+		getLessonValidityDates() {
+			SysDict.findListByType({ type: 'lessonValidityDate' }).then(res => {
+				this.lessonValidityDates = res
+			})
 		},
 		back() {
 			this.$router.go(-1)

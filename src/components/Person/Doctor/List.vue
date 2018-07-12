@@ -103,8 +103,8 @@ export default {
 		reset() {
 			this.find.keyword = ''
 			this.find.startTime = ''
-            this.find.endTime = ''
-            this.pageIndex = 1
+			this.find.endTime = ''
+			this.pageIndex = 1
 			this.pageSize = 10
 			this.createRangeDate = []
 			this.getList()
@@ -131,13 +131,13 @@ export default {
 			this.$router.push({name: 'editdoctor', query: { doctorId } })
 		},
 		del(doctorId) {
-            deleteConfirm(doctorId, ids => {
+			deleteConfirm(doctorId, ids => {
 				Doctor.del({ ids }).then(res => {
 					Message.success('成功！')
 					this.getList()
 				})
 			}, this.selectedList)
-        }
+		}
 	}
 }
 </script>

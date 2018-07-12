@@ -105,13 +105,15 @@ export default {
             this.find.endTime = date[1]
         },
         selectionChange(data) {
-            this.selectedList = data.map(item => item.id)
+            this.selectedList = data.map(item => item.dictId)
         },
         pageChange(index) {
             this.pageIndex = index
+            this.getList()
         },
         pageSizeChange(size) {
             this.pageSize = size
+            this.getList()
         },
         reset() {
             this.find.type = ''

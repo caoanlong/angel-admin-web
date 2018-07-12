@@ -22,7 +22,7 @@
 		</div>
 		<el-dialog title="裁剪图片" :visible.sync="isShowCropper">
 			<vueCropper
-				style="height: 600px" 
+				style="height: 600px;" 
 				ref="cropper"
 				:autoCrop="true"
 				:fixed="fixed" 

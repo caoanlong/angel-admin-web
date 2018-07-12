@@ -1,27 +1,30 @@
 <template>
-    <div class="main-content">
+	<div class="main-content">
 		<el-card class="box-card">
 			<div slot="header">查看课程</div>
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="18" :offset="2">
-                        <el-form-item label="图片">
-							<ImageUpload :files="[lesson.image]" :isPreview="true"/>
-						</el-form-item>
 						<el-form-item label="名称">
 							<p>{{lesson.name}}</p>
 						</el-form-item>
-                        <el-form-item label="类型">
-							<p>{{lesson.type}}</p>
-						</el-form-item>
-                        <el-form-item label="价格">
-							<p>{{lesson.price}}</p>
+						<el-form-item label="类型">
+							<p>{{lesson.type.value}}</p>
 						</el-form-item>
 						<el-form-item label="使用有效期">
-							<p>{{lesson.expiryDate}}</p>
+							<p>{{lesson.validDate.value}}</p>
 						</el-form-item>
-                        <el-form-item label="详情">
-							<p v-html="lesson.detail"></p>
+						<el-form-item label="价格">
+							<p>{{lesson.price}}</p>
+						</el-form-item>
+						<el-form-item label="课时数">
+							<p>{{lesson.num}}</p>
+						</el-form-item>
+						<el-form-item label="图片">
+							<ImageUpload :files="[lesson.image]" :isPreview="true"/>
+						</el-form-item>
+						<el-form-item label="详情">
+							<p v-html="lesson.remark"></p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -36,25 +39,36 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import LessonSet from '../../../api/LessonSet'
 export default {
-    data() {
+	data() {
 		return {
 			lesson: {
-                image: '#',
-                name: '正姿舞蹈',
-                type: '48节课半年卡',
-                price: 278,
-                expiryDate: '6个月',
-                detail: '教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈教授正姿舞蹈'
-            }
+				image: '',
+				name: '',
+				typeId: '',
+				price: '',
+				num: '',
+				validityDate: '',
+				remark: ''
+			}
 		}
-    },
-    components: { ImageUpload },
-    methods: {
-        back() {
+	},
+	components: { ImageUpload },
+	created() {
+		this.getInfo()
+	},
+	methods: {
+		getInfo() {
+			const lessonSetId = this.$route.query.lessonSetId
+			LessonSet.findById({ lessonSetId }).then(res => {
+				this.lesson = res
+			})
+		},
+		back() {
 			this.$router.go(-1)
 		}
-    }
+	}
 }
 </script>
 

@@ -33,14 +33,19 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center"></el-table-column>
-				<el-table-column prop="express" label="快递" align="center" width="70">
+				<el-table-column prop="name" label="名称" align="center">
 					<template slot-scope="scope">
-						<span>{{scope.row.express == 0 ? '免运费' : scope.row.express}}</span>
+						<span class="overflow-ellipsis-simple">{{scope.row.name}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="price" label="价格" align="center"></el-table-column>
-				<el-table-column prop="saleNum" label="月销" align="center"></el-table-column>
+				<el-table-column prop="expressType.value" label="快递" align="center" width="120"></el-table-column>
+				<el-table-column prop="freight" label="运费" align="center" width="120">
+					<template slot-scope="scope">
+						<span>{{scope.row.freight == 0 ? '免运费' : scope.row.freight}}</span>
+					</template>
+				</el-table-column>
+				<el-table-column prop="price" label="价格" align="center" width="90"></el-table-column>
+				<el-table-column prop="saleNum" label="销量" align="center" width="80"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
@@ -53,9 +58,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.platformProductId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.platformProductId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.platformProductId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -68,6 +73,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import PlatformProduct from '../../../api/PlatformProduct'
 export default {
 	data() {
 		return {
@@ -94,51 +100,50 @@ export default {
 			this.find.endDate = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.id)
+			this.selectedList = data.map(item => item.platformProductId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
 			this.find.name = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					name: '七彩虹GTX750Ti 2G限量版',
-					express: 0,
-					saleNum: 56,
-					price: 278,
-					detail: '游戏发烧友必备游戏发烧友必备游戏发烧友必备游戏发烧友必备游戏发烧友必备',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
-				}
-				item.id = i
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			PlatformProduct.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				name: this.find.name,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
 		add() {
 			this.$router.push({name: 'addplatformproduct'})
 		},
-		view() {
-			this.$router.push({name: 'viewplatformproduct'})
+		view(platformProductId) {
+			this.$router.push({name: 'viewplatformproduct', query: { platformProductId } })
 		},
-		edit() {
-			this.$router.push({name: 'editplatformproduct'})
+		edit(platformProductId) {
+			this.$router.push({name: 'editplatformproduct', query: { platformProductId } })
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
-			})
+		del(platformProductId) {
+			deleteConfirm(platformProductId, ids => {
+				PlatformProduct.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
 		},
 	}
 }
