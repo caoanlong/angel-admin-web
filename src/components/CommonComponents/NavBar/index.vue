@@ -13,14 +13,11 @@
 					<i class="el-icon-caret-bottom"></i>
 				</div>
 				<el-dropdown-menu slot="dropdown">
-					<router-link to="/">
-						<el-dropdown-item>修改头像</el-dropdown-item>
-					</router-link>
-					<router-link to="/">
+					<router-link to="/userinfo">
 						<el-dropdown-item>个人资料</el-dropdown-item>
 					</router-link>
-					<router-link to="/">
-						<el-dropdown-item>通讯录</el-dropdown-item>
+					<router-link to="/updatepassword">
+						<el-dropdown-item>修改密码</el-dropdown-item>
 					</router-link>
 					<el-dropdown-item divided>
 						<span @click="logout" style="display:block;">退出</span>

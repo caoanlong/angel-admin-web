@@ -6,13 +6,13 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="会员">
-							<p>{{memLesson.memberName}}</p>
+							<p>{{memLesson.member.name}}</p>
 						</el-form-item>
 						<el-form-item label="课程名称">
-							<p>{{memLesson.lessonName}}</p>
+							<p>{{memLesson.lessonSet.name}}</p>
 						</el-form-item>
 						<el-form-item label="课程类型">
-							<p>{{memLesson.lessonType}}</p>
+							<p>{{memLesson.lessonSet.type.value}}</p>
 						</el-form-item>
 						<el-form-item label="已上课时">
 							<p>{{memLesson.num}}</p>
@@ -31,19 +31,29 @@
 </template>
 
 <script>
+import Lesson from '../../../api/Lesson'
 export default {
 	data() {
 		return {
 			memLesson: {
-				memberName: '王五',
-				lessonName: '正姿舞蹈',
-				lessonType: '48节课半年卡',
-				num: 12,
-				totalNum: 48
+				memberName: '',
+				lessonName: '',
+				lessonType: '',
+				num: '',
+				totalNum: ''
 			}
 		}
 	},
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const lessonId = this.$route.query.lessonId
+			Lesson.findById({ lessonId }).then(res => {
+				this.memLesson = res
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

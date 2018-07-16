@@ -35,8 +35,6 @@
 				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
 				<el-table-column prop="teacher" label="老师" align="center" width="90"></el-table-column>
 				<el-table-column prop="remark" label="建议" align="center" :show-overflow-tooltip="true"></el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center" width="90"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center" width="90"></el-table-column>
 				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
@@ -103,12 +101,6 @@ export default {
 					member: '小明',
 					teacher: '大毛',
 					remark: '治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
 				}
 				item.id = i
 				item.record_date = new Date().getTime() + (i * 1000000)

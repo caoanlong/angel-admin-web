@@ -33,6 +33,18 @@ const router = new Router({
 					component: () => import ('../components/Home')
 				},
 				{
+					path: '/userinfo',
+					name: 'userinfo',
+					meta: { title: '个人资料' },
+					component: () => import ('../components/User')
+				},
+				{
+					path: '/updatepassword',
+					name: 'updatepassword',
+					meta: { title: '修改密码' },
+					component: () => import('../components/User/updatePassword')
+				},
+				{
 					path: '/healthcenter',
 					name: 'healthcenter',
 					meta: { title: '健康助长' },

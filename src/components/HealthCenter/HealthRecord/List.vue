@@ -40,15 +40,13 @@
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
 				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
-				<el-table-column prop="teacher" label="老师" align="center" width="90"></el-table-column>
+				<el-table-column prop="teacher" label="医生" align="center" width="90"></el-table-column>
 				<el-table-column prop="type" label="类型" align="center" width="90"></el-table-column>
 				<el-table-column prop="record_date" label="报告日期" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.record_date">{{ new Date(scope.row.record_date).getTime() | getdatefromtimestamp(true)}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="create_user.name" label="创建人" align="center" width="90"></el-table-column>
-				<el-table-column prop="update_user.name" label="更新人" align="center" width="90"></el-table-column>
 				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
@@ -116,13 +114,7 @@ export default {
 					name: '小明足疾筛查报告',
 					member: '小明',
 					teacher: '大毛',
-					type: '筛查报告',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
+					type: '筛查报告'
 				}
 				item.id = i
 				item.record_date = new Date().getTime() + (i * 1000000)

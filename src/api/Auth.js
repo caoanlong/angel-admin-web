@@ -18,6 +18,20 @@ class Auth extends Base {
             params
         })
     }
+    update(data) {
+        return this.request({
+            url: this.baseUrl + '/update',
+            method: 'post',
+            data
+        })
+    }
+    updatePassword(data) {
+        return this.request({
+            url: this.baseUrl + '/updatePassword',
+            method: 'post',
+            data
+        })
+    }
 }
 
 export default new Auth('/auth', request)

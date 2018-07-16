@@ -5,19 +5,28 @@
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="14" :offset="4">
+						<el-form-item label="头像">
+							<ImageUpload :files="[member.avatar]" :isPreview="true"/>
+						</el-form-item>
 						<el-form-item label="用户名">
 							<p>{{member.name}}</p>
 						</el-form-item>
 						<el-form-item label="手机号">
 							<p>{{member.mobile}}</p>
 						</el-form-item>
-						<el-form-item label="openid">
-							<p>{{member.openid}}</p>
+						<el-form-item label="性别">
+							<p>{{member.sex == 'male' ? '男' : '女'}}</p>
+						</el-form-item>
+						<el-form-item label="年龄">
+							<p>{{member.age}}</p>
+						</el-form-item>
+						<el-form-item label="简介">
+							<p>{{member.remark}}</p>
 						</el-form-item>
 						<el-form-item>
-							<el-button type="primary" @click="sendReport(member.name)">发送报告</el-button>
-							<el-button type="primary" @click="sendPhoto(member.name)">发送剪影</el-button>
-							<el-button type="primary" @click="teacherAdvice(member.name)">老师建议</el-button>
+							<el-button type="primary" @click="sendReport(member.memberId)">发送报告</el-button>
+							<el-button type="primary" @click="sendPhoto(member.memberId)">发送剪影</el-button>
+							<el-button type="primary" @click="teacherAdvice(member.memberId)">老师建议</el-button>
 							<el-button @click="back">返回</el-button>
 						</el-form-item>
 					</el-col>
@@ -28,25 +37,38 @@
 </template>
 
 <script>
+import Member from '../../../api/Member'
 export default {
 	data() {
 		return {
 			member: {
-				name: '王五',
-				mobile: '15036366969',
-				openid: 'wxlljffkjflhklkhlkh'
+				avatar: '',
+				name: '',
+				mobile: '',
+				sex: '',
+				age: '',
+				remark: ''
 			}
 		}
 	},
+	created() {
+		this.getInfo()
+	},
 	methods: {
-		sendReport(name) {
-			this.$router.push({name: 'addhealthrecord', query: { name }})
+		getInfo() {
+			const memberId = this.$route.query.memberId
+			Member.findById({ memberId }).then(res => {
+				this.member = res
+			})
 		},
-		sendPhoto(name) {
-			this.$router.push({name: 'addlessonphoto', query: { name }})
+		sendReport(memberId) {
+			this.$router.push({name: 'addhealthrecord', query: { memberId }})
 		},
-		teacherAdvice(name) {
-			this.$router.push({name: 'addteacheradvice', query: { name }})
+		sendPhoto(memberId) {
+			this.$router.push({name: 'addlessonphoto', query: { memberId }})
+		},
+		teacherAdvice(memberId) {
+			this.$router.push({name: 'addteacheradvice', query: { memberId }})
 		},
 		back() {
 			this.$router.go(-1)

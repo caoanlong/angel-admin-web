@@ -5,12 +5,6 @@
 				<el-form-item label="关键字">
 					<el-input placeholder="会员/课程名称" v-model="find.keywords"></el-input>
 				</el-form-item>
-				<el-form-item label="课程类型">
-					<el-select placeholder="请选择" v-model="find.lessonType">
-						<el-option label="48节课半年卡" value="48节课半年卡"></el-option>
-						<el-option label="96节课年卡" value="96节课年卡"></el-option>
-					</el-select>
-				</el-form-item>
 				<el-form-item label="创建时间">
 					<el-date-picker
 						v-model="createRangeDate"
@@ -33,24 +27,24 @@
 				:data="list" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column prop="memberName" label="会员" align="center"></el-table-column>
-				<el-table-column prop="lessonName" label="课程名称" align="center"></el-table-column>
-				<el-table-column prop="lessonType" label="课程类型" align="center"></el-table-column>
+				<el-table-column prop="member.name" label="会员" align="center"></el-table-column>
+				<el-table-column prop="lessonSet.name" label="课程名称" align="center"></el-table-column>
+				<el-table-column prop="lessonSet.type.value" label="课程类型" align="center"></el-table-column>
 				<el-table-column prop="num" label="已上课时" align="center"></el-table-column>
 				<el-table-column prop="totalNum" label="总课时" align="center"></el-table-column>
-				<el-table-column prop="valid_time" label="有效期至" align="center"  width="140">
+				<el-table-column prop="validityDate" label="有效期至" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp(true)}}</span>
+						<span v-if="scope.row.validityDate">{{ new Date(scope.row.validityDate).getTime() | getdatefromtimestamp(true)}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.lessonId)">查看</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -62,6 +56,7 @@
 <script>
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
+import Lesson from '../../../api/Lesson'
 export default {
 	data() {
 		return {
@@ -70,9 +65,8 @@ export default {
 			count: 10,
 			find: {
 				keywords: '',
-				lessonType: '',
-				startDate: '',
-				endDate: ''
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			createRangeDate: []
@@ -84,35 +78,40 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
-			this.find.keywords = ''
-			this.find.lessonType = ''
+			this.find.keyword = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.createRangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					memberName: '王五',
-					lessonName: '正姿舞蹈',
-					lessonType: '48节课半年卡',
-					num: 12,
-					totalNum: 48
-				}
-				item.id = i
-				item.create_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			Lesson.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
-		view() {
-			this.$router.push({name: 'viewmemlesson'})
+		view(lessonId) {
+			this.$router.push({name: 'viewmemlesson', query: { lessonId }})
 		},
 	}
 }

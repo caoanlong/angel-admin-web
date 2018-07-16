@@ -6,25 +6,23 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="会员">
-							<p>{{order.memberName}}</p>
+							<p>{{order.member.name}}</p>
 						</el-form-item>
 						<el-form-item label="订单号">
 							<p>{{order.orderNo}}</p>
 						</el-form-item>
 						<el-form-item label="名称">
-							<p>{{order.name}}</p>
-						</el-form-item>
-						<el-form-item label="描述">
-							<p>{{order.info}}</p>
+							<p v-if="order.lessonSet">{{order.lessonSet.name}}</p>
+							<p v-else-if="order.product">{{order.product.name}}</p>
 						</el-form-item>
 						<el-form-item label="价格">
-							<p>{{order.price}}</p>
+							<p>{{order.totalPrice}}</p>
 						</el-form-item>
 						<el-form-item label="状态">
-							<p>{{order.status}}</p>
+							<p>{{order.status == 'success' ? '支付成功' : '支付失败'}}</p>
 						</el-form-item>
 						<el-form-item label="下单时间">
-							<p>{{order.sale_time | getdatefromtimestamp()}}</p>
+							<p>{{order.createTime | getdatefromtimestamp()}}</p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -37,21 +35,23 @@
 </template>
 
 <script>
+import Order from '../../../api/Order'
 export default {
 	data() {
 		return {
-			order: {
-				memberName: '王五',
-				orderNo: '201806091234567788',
-				name: '正姿舞蹈',
-				info: '10节课体验卡',
-				price: 200,
-				status: '支付成功',
-				sale_time: new Date().getTime()
-			}
+			order: {}
 		}
 	},
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const orderId = this.$route.query.orderId
+			Order.findById({ orderId }).then(res => {
+				this.order = res
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

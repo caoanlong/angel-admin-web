@@ -27,30 +27,29 @@
 				:data="list" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column prop="memberName" label="会员" align="center"></el-table-column>
+				<el-table-column prop="member.name" label="会员" align="center"></el-table-column>
 				<el-table-column prop="orderNo" label="订单号" align="center"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center"></el-table-column>
-				<el-table-column prop="info" label="描述" align="center"></el-table-column>
-				<el-table-column prop="price" label="价格" align="center"></el-table-column>
-				<el-table-column prop="status" label="状态" align="center">
+				<el-table-column label="名称" align="center">
 					<template slot-scope="scope">
-						<el-tag size="mini" type="info" v-if="scope.row.status == '支付失败'">支付失败</el-tag>
-						<el-tag size="mini" type="success" v-else>支付成功</el-tag>
+						<span v-if="scope.row.lessonSet">{{scope.row.lessonSet.name}}</span>
+						<span v-else-if="scope.row.product">{{scope.row.product.name}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="sale_time" label="下单时间" align="center"  width="140">
+				<el-table-column prop="totalPrice" label="价格" align="center"></el-table-column>
+				<el-table-column label="状态" align="center">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<el-tag size="mini" type="success" v-if="scope.row.status == 'success'">支付成功</el-tag>
+						<el-tag size="mini" type="info" v-else>支付失败</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="下单时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="80" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.orderId)">查看</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -62,6 +61,7 @@
 <script>
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
+import Order from '../../../api/Order'
 export default {
 	data() {
 		return {
@@ -70,8 +70,8 @@ export default {
 			count: 10,
 			find: {
 				keywords: '',
-				startDate: '',
-				endDate: '',
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			saleRangeDate: []
@@ -88,31 +88,35 @@ export default {
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
-			this.find.keywords = ''
+			this.find.keyword = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.saleRangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					memberName: '王五',
-					orderNo: '201806091234567788',
-					name: '正姿舞蹈',
-					info: '10节课体验卡',
-					price: 200,
-					status: '支付成功',
-				}
-				item.id = i
-				item.sale_time = new Date().getTime() + (i * 1000000)
-				item.create_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			Order.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
-		view() {
-			this.$router.push({name: 'viewmemorder'})
+		view(orderId) {
+			this.$router.push({name: 'viewmemorder', query: { orderId }})
 		},
 	}
 }
