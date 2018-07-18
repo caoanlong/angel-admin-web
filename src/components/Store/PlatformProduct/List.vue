@@ -58,9 +58,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view(scope.row.platformProductId)">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit(scope.row.platformProductId)">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del(scope.row.platformProductId)">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.productId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.productId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.productId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -73,7 +73,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
-import PlatformProduct from '../../../api/PlatformProduct'
+import Product from '../../../api/Product'
 export default {
 	data() {
 		return {
@@ -83,8 +83,8 @@ export default {
 			selectedList: [],
 			find: {
 				name: '',
-				startDate: '',
-				endDate: ''
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			createRangeDate: []
@@ -96,11 +96,11 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.platformProductId)
+			this.selectedList = data.map(item => item.productId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
@@ -117,12 +117,13 @@ export default {
 			this.getList()
 		},
 		getList() {
-			PlatformProduct.find({
+			Product.find({
 				pageIndex: this.pageIndex,
 				pageSize: this.pageSize,
 				name: this.find.name,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				type: 'platformProduct'
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -131,15 +132,15 @@ export default {
 		add() {
 			this.$router.push({name: 'addplatformproduct'})
 		},
-		view(platformProductId) {
-			this.$router.push({name: 'viewplatformproduct', query: { platformProductId } })
+		view(productId) {
+			this.$router.push({name: 'viewplatformproduct', query: { productId } })
 		},
-		edit(platformProductId) {
-			this.$router.push({name: 'editplatformproduct', query: { platformProductId } })
+		edit(productId) {
+			this.$router.push({name: 'editplatformproduct', query: { productId } })
 		},
-		del(platformProductId) {
-			deleteConfirm(platformProductId, ids => {
-				PlatformProduct.del({ ids }).then(res => {
+		del(productId) {
+			deleteConfirm(productId, ids => {
+				Product.del({ ids }).then(res => {
 					Message.success('成功！')
 					this.getList()
 				})

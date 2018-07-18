@@ -1,10 +1,10 @@
 import Base from './Base'
 import request from '../common/request'
 
-class Teacher extends Base {
+class Product extends Base {
     constructor(url, req) {
         super(url, req)
     }
 }
 
-export default new Teacher('/teacher', request)
+export default new Product('/product', request)

@@ -9,16 +9,16 @@
 							<p>{{lesson.name}}</p>
 						</el-form-item>
 						<el-form-item label="类型">
-							<p>{{lesson.type.value}}</p>
+							<p>{{lesson.label && lesson.label.value}}</p>
 						</el-form-item>
 						<el-form-item label="使用有效期">
-							<p>{{lesson.validDate.value}}</p>
+							<p>{{lesson.validDate}}</p>
 						</el-form-item>
 						<el-form-item label="价格">
 							<p>{{lesson.price}}</p>
 						</el-form-item>
 						<el-form-item label="课时数">
-							<p>{{lesson.num}}</p>
+							<p>{{lesson.lessonNum}}</p>
 						</el-form-item>
 						<el-form-item label="图片">
 							<ImageUpload :files="[lesson.image]" :isPreview="true"/>
@@ -39,19 +39,20 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import LessonSet from '../../../api/LessonSet'
+import Product from '../../../api/Product'
 export default {
 	data() {
 		return {
 			lesson: {
-				image: '',
-				name: '',
-				typeId: '',
-				price: '',
-				num: '',
-				validityDate: '',
-				remark: ''
-			}
+				type: 'lessonSet',
+                name: '',
+                labelId: '',
+                image: '',
+                lessonNum: '',
+                price: '',
+                validDate: '',
+                remark: ''
+			},
 		}
 	},
 	components: { ImageUpload },
@@ -60,8 +61,8 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const lessonSetId = this.$route.query.lessonSetId
-			LessonSet.findById({ lessonSetId }).then(res => {
+			const productId = this.$route.query.productId
+			Product.findById({ productId }).then(res => {
 				this.lesson = res
 			})
 		},

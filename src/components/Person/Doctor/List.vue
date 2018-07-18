@@ -35,6 +35,13 @@
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="姓名" align="center"></el-table-column>
 				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+				<el-table-column prop="age" label="年龄" align="center"></el-table-column>
+				<el-table-column label="性别" align="center">
+					<template slot-scope="scope">
+						<span v-if="scope.row.sex == 'male'">男</span>
+						<span v-else>女</span>
+					</template>
+				</el-table-column>
 				<el-table-column prop="remark" label="简介" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
@@ -48,9 +55,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view(scope.row.doctorId)">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit(scope.row.doctorId)">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del(scope.row.doctorId)">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.personId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.personId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.personId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -63,7 +70,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
-import Doctor from '../../../api/Doctor'
+import Person from '../../../api/Person'
 export default {
 	data() {
 		return {
@@ -73,8 +80,8 @@ export default {
 			selectedList: [],
 			find: {
 				keyword: '',
-				startDate: '',
-				endDate: ''
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			createRangeDate: []
@@ -86,11 +93,11 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.doctorId)
+			this.selectedList = data.map(item => item.personId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
@@ -110,12 +117,13 @@ export default {
 			this.getList()
 		},
 		getList() {
-			Doctor.find({
+			Person.find({
 				pageIndex: this.pageIndex,
 				pageSize: this.pageSize,
 				keyword: this.find.keyword,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				type: 'doctor'
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -124,15 +132,15 @@ export default {
 		add() {
 			this.$router.push({name: 'adddoctor'})
 		},
-		view(doctorId) {
-			this.$router.push({name: 'viewdoctor', query: { doctorId } })
+		view(personId) {
+			this.$router.push({name: 'viewdoctor', query: { personId } })
 		},
-		edit(doctorId) {
-			this.$router.push({name: 'editdoctor', query: { doctorId } })
+		edit(personId) {
+			this.$router.push({name: 'editdoctor', query: { personId } })
 		},
-		del(doctorId) {
-			deleteConfirm(doctorId, ids => {
-				Doctor.del({ ids }).then(res => {
+		del(personId) {
+			deleteConfirm(personId, ids => {
+				Person.del({ ids }).then(res => {
 					Message.success('成功！')
 					this.getList()
 				})

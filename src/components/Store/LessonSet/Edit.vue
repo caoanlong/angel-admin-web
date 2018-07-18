@@ -9,20 +9,18 @@
 							<el-input v-model="lesson.name"></el-input>
 						</el-form-item>
 						<el-form-item label="类型">
-							<el-select style="width: 100%" placeholder="请选择" v-model="lesson.typeId">
+							<el-select style="width: 100%" placeholder="请选择" v-model="lesson.labelId">
 								<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item label="使用有效期">
-							<el-select style="width:100%" placeholder="请选择" v-model="lesson.validityDate">
-								<el-option v-for="item in lessonValidityDates" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
-							</el-select>
+							<el-input v-model="lesson.validDate"></el-input>
 						</el-form-item>
 						<el-form-item label="价格">
 							<el-input v-model="lesson.price"></el-input>
 						</el-form-item>
 						<el-form-item label="课时数">
-							<el-input v-model="lesson.num"></el-input>
+							<el-input v-model="lesson.lessonNum"></el-input>
 						</el-form-item>
 						<el-form-item label="图片">
 							<ImageUpload :files="[lesson.image]" @imgUrlBack="handleImageSuccess" :isUseCropper="true"/>
@@ -46,28 +44,27 @@ import { Message } from 'element-ui'
 import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import SysDict from '../../../api/SysDict'
-import LessonSet from '../../../api/LessonSet'
+import Product from '../../../api/Product'
 export default {
 	data() {
 		return {
 			editor: null,
 			lesson: {
-				image: '',
-				name: '',
-				typeId: '',
-				price: '',
-				num: '',
-				validityDate: '',
-				remark: ''
+				type: 'lessonSet',
+                name: '',
+                labelId: '',
+                image: '',
+                lessonNum: '',
+                price: '',
+                validDate: '',
+                remark: ''
 			},
-			types: [],
-			lessonValidityDates: []
+			types: []
 		}
 	},
 	components: { ImageUpload },
 	created() {
 		this.getTypes()
-		this.getLessonValidityDates()
 	},
 	mounted() {
 		this.editor = new E('#editor')
@@ -90,7 +87,7 @@ export default {
 		save() {
 			const data = this.lesson
 			data.remark = this.editor.txt.html()
-			LessonSet.update(data).then(res => {
+			Product.update(data).then(res => {
 				Message.success('成功！')
 				this.$router.push({name: 'lessonset'})
 			})
@@ -101,17 +98,12 @@ export default {
 		getTypes() {
 			SysDict.findListByType({ type: 'lessonType' }).then(res => {
 				this.types = res
-			})
-		},
-		getLessonValidityDates() {
-			SysDict.findListByType({ type: 'lessonValidityDate' }).then(res => {
-				this.lessonValidityDates = res
 				this.getInfo()
 			})
 		},
 		getInfo() {
-			const lessonSetId = this.$route.query.lessonSetId
-			LessonSet.findById({ lessonSetId }).then(res => {
+			const productId = this.$route.query.productId
+			Product.findById({ productId }).then(res => {
 				this.lesson = res
 				this.$nextTick(() => {
 					this.editor.txt.html(this.lesson.remark)

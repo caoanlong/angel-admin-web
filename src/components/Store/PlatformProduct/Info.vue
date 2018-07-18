@@ -36,17 +36,18 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import PlatformProduct from '../../../api/PlatformProduct'
+import Product from '../../../api/Product'
 export default {
 	data() {
 		return {
 			product: {
-				image: '',
-				name: '',
-				freight: '',
-				expressTypeId: '',
-				price: '',
-				remark: ''
+				type: 'platformProduct',
+                name: '',
+                image: '',
+                freight: '',
+                expressTypeId: '',
+                price: '',
+                remark: ''
 			}
 		}
 	},
@@ -56,8 +57,8 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const platformProductId = this.$route.query.platformProductId
-			PlatformProduct.findById({ platformProductId }).then(res => {
+			const productId = this.$route.query.productId
+			Product.findById({ productId }).then(res => {
 				this.product = res
 			})
 		},

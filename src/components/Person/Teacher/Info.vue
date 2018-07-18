@@ -14,6 +14,12 @@
 						<el-form-item label="手机号">
 							<p>{{teacher.mobile}}</p>
 						</el-form-item>
+						<el-form-item label="年龄">
+							<p>{{teacher.age}}</p>
+						</el-form-item>
+						<el-form-item label="性别">
+							<p>{{teacher.sex == 'male' ? '男' : '女'}}</p>
+						</el-form-item>
 						<el-form-item label="简介">
 							<p>{{teacher.remark}}</p>
 						</el-form-item>
@@ -30,7 +36,7 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import Teacher from '../../../api/Teacher'
+import Person from '../../../api/Person'
 export default {
 	data() {
 		return {
@@ -38,6 +44,8 @@ export default {
 				avatar: '',
 				name: '',
 				mobile: '',
+				age: '',
+				sex: '',
 				remark: ''
 			}
 		}
@@ -48,8 +56,8 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const teacherId = this.$route.query.teacherId
-			Teacher.findById({ teacherId }).then(res => {
+			const personId = this.$route.query.personId
+			Person.findById({ personId }).then(res => {
 				this.teacher = res
 			})
 		},

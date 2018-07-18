@@ -40,19 +40,20 @@
 import { Message } from 'element-ui'
 import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import PlatformProduct from '../../../api/PlatformProduct'
+import Product from '../../../api/Product'
 import SysDict from '../../../api/SysDict'
 export default {
 	data() {
 		return {
 			editor: null,
 			product: {
-				image: '',
-				name: '',
-				freight: '',
-				expressTypeId: '',
-				price: '',
-				remark: ''
+				type: 'platformProduct',
+                name: '',
+                image: '',
+                freight: '',
+                expressTypeId: '',
+                price: '',
+                remark: ''
 			},
 			types: []
 		}
@@ -82,7 +83,7 @@ export default {
 		save() {
 			const data = this.product
 			data.remark = this.editor.txt.html()
-			PlatformProduct.add(data).then(res => {
+			Product.add(data).then(res => {
 				Message.success('成功！')
 				this.$router.push({name: 'platformproduct'})
 			})

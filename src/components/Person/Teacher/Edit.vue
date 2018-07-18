@@ -14,6 +14,15 @@
 						<el-form-item label="手机号">
 							<el-input v-model="teacher.mobile"></el-input>
 						</el-form-item>
+						<el-form-item label="年龄">
+							<el-input v-model="teacher.age"></el-input>
+						</el-form-item>
+						<el-form-item label="性别">
+							<el-select style="width:100%" v-model="teacher.sex">
+								<el-option label="男" value="male"></el-option>
+								<el-option label="女" value="female"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="简介">
 							<el-input type="textarea" v-model="teacher.remark"></el-input>
 						</el-form-item>
@@ -31,7 +40,7 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import Teacher from '../../../api/Teacher'
+import Person from '../../../api/Person'
 export default {
 	data() {
 		return {
@@ -39,6 +48,8 @@ export default {
 				avatar: '',
 				name: '',
 				mobile: '',
+				age: '',
+				sex: '',
 				remark: ''
 			}
 		}
@@ -49,13 +60,13 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const teacherId = this.$route.query.teacherId
-			Teacher.findById({ teacherId }).then(res => {
+			const personId = this.$route.query.personId
+			Person.findById({ personId }).then(res => {
 				this.teacher = res
 			})
 		},
 		save() {
-			Teacher.update(this.teacher).then(res => {
+			Person.update(this.teacher).then(res => {
 				Message.success(res.data.msg)
 				this.$router.push({name: 'teacher'})
 			})

@@ -14,6 +14,12 @@
 						<el-form-item label="手机号">
 							<p>{{doctor.mobile}}</p>
 						</el-form-item>
+						<el-form-item label="年龄">
+							<p>{{doctor.age}}</p>
+						</el-form-item>
+						<el-form-item label="性别">
+							<p>{{doctor.sex == 'male' ? '男' : '女'}}</p>
+						</el-form-item>
 						<el-form-item label="简介">
 							<p>{{doctor.remark}}</p>
 						</el-form-item>
@@ -30,7 +36,7 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import Doctor from '../../../api/Doctor'
+import Person from '../../../api/Person'
 export default {
 	data() {
 		return {
@@ -38,6 +44,8 @@ export default {
 				avatar: '',
 				name: '',
 				mobile: '',
+				age: '',
+				sex: '',
 				remark: ''
 			}
 		}
@@ -48,8 +56,8 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const doctorId = this.$route.query.doctorId
-			Doctor.findById({ doctorId }).then(res => {
+			const personId = this.$route.query.personId
+			Person.findById({ personId }).then(res => {
 				this.doctor = res
 			})
 		},

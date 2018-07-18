@@ -6,7 +6,7 @@
 					<el-input placeholder="名称" v-model="find.name"></el-input>
 				</el-form-item>
 				<el-form-item label="类型">
-					<el-select placeholder="请选择" v-model="find.typeId">
+					<el-select placeholder="请选择" v-model="find.labelId">
 						<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 					</el-select>
 				</el-form-item>
@@ -39,7 +39,7 @@
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
-				<el-table-column prop="type.value" label="类型" align="center"></el-table-column>
+				<el-table-column prop="label.value" label="类型" align="center"></el-table-column>
 				<el-table-column prop="price" label="价格" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
@@ -53,9 +53,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view(scope.row.lessonSetId)">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit(scope.row.lessonSetId)">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del(scope.row.lessonSetId)">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.productId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.productId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.productId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -68,7 +68,7 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
-import LessonSet from '../../../api/LessonSet'
+import Product from '../../../api/Product'
 import SysDict from '../../../api/SysDict'
 export default {
 	data() {
@@ -79,9 +79,9 @@ export default {
 			selectedList: [],
 			find: {
 				name: '',
-				typeId: '',
-				startDate: '',
-				endDate: ''
+				labelId: '',
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			types: [],
@@ -95,11 +95,11 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.lessonSetId)
+			this.selectedList = data.map(item => item.productId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
@@ -111,7 +111,7 @@ export default {
 		},
 		reset() {
 			this.find.name = ''
-			this.find.typeId = ''
+			this.find.labelId = ''
 			this.find.startTime = ''
 			this.find.endTime = ''
 			this.pageIndex = 1
@@ -119,13 +119,14 @@ export default {
 			this.getList()
 		},
 		getList() {
-			LessonSet.find({
+			Product.find({
 				pageIndex: this.pageIndex,
 				pageSize: this.pageSize,
 				name: this.find.name,
-				typeId: this.find.typeId,
+				labelId: this.find.labelId,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				type: 'lessonSet'
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -134,15 +135,15 @@ export default {
 		add() {
 			this.$router.push({name: 'addlesson'})
 		},
-		view(lessonSetId) {
-			this.$router.push({name: 'viewlesson', query: { lessonSetId } })
+		view(productId) {
+			this.$router.push({name: 'viewlesson', query: { productId } })
 		},
-		edit(lessonSetId) {
-			this.$router.push({name: 'editlesson', query: { lessonSetId } })
+		edit(productId) {
+			this.$router.push({name: 'editlesson', query: { productId } })
 		},
-		del(lessonSetId) {
-            deleteConfirm(lessonSetId, ids => {
-				LessonSet.del({ ids }).then(res => {
+		del(productId) {
+            deleteConfirm(productId, ids => {
+				Product.del({ ids }).then(res => {
 					Message.success('成功！')
 					this.getList()
 				})
