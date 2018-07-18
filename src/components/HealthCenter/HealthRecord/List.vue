@@ -6,9 +6,8 @@
 					<el-input placeholder="名称/会员/老师" v-model="find.keywords"></el-input>
 				</el-form-item>
                 <el-form-item label="类型">
-					<el-select placeholder="请选择" v-model="find.type">
-						<el-option label="筛查报告" value="筛查报告"></el-option>
-						<el-option label="检测报告" value="检测报告"></el-option>
+					<el-select placeholder="请选择" v-model="find.typeId">
+						<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="上传时间">
@@ -36,32 +35,33 @@
 			<el-table 
 				:data="list" 
 				border style="width: 100%" 
-				size="mini" stripe>
+				size="mini" stripe 
+				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
 				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
 				<el-table-column prop="teacher" label="医生" align="center" width="90"></el-table-column>
 				<el-table-column prop="type" label="类型" align="center" width="90"></el-table-column>
-				<el-table-column prop="record_date" label="报告日期" align="center"  width="140">
+				<el-table-column prop="recordDate" label="报告日期" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.record_date">{{ new Date(scope.row.record_date).getTime() | getdatefromtimestamp(true)}}</span>
+						<span v-if="scope.row.recordDate">{{ new Date(scope.row.recordDate).getTime() | getdatefromtimestamp(true)}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.healthRecordId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.healthRecordId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.healthRecordId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -74,68 +74,91 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import HealthRecord from '../../../api/HealthRecord'
+import SysDict from '../../../api/SysDict'
 export default {
 	data() {
 		return {
 			pageIndex: 1,
 			pageSize: 10,
-			count: 10,
+			count: 0,
+			selectedList: [],
 			find: {
 				keywords: '',
-				type: '',
+				typeId: '',
 				startDate: '',
 				endDate: ''
 			},
 			list: [],
-			rangeDate: []
+			rangeDate: [],
+			types: []
 		}
 	},
 	components: { Page },
 	created() {
 		this.getList()
+		this.getTypes()
 	},
 	methods: {
 		selectDateRange(date) {
 			this.find.startDate = date[0]
 			this.find.endDate = date[1]
 		},
+		selectionChange(data) {
+			this.selectedList = data.map(item => item.healthRecordId)
+		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
-			this.find.keywords = ''
+			this.find.keyword = ''
+			this.find.typeId = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.rangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					name: '小明足疾筛查报告',
-					member: '小明',
-					teacher: '大毛',
-					type: '筛查报告'
-				}
-				item.id = i
-				item.record_date = new Date().getTime() + (i * 1000000)
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			HealthRecord.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				typeId: this.find.typeId,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
+		},
+		getTypes() {
+			SysDict.findListByType({ type: 'recordType' }).then(res => {
+				this.types = res
+			})
 		},
 		add() {
 			this.$router.push({name: 'addhealthrecord'})
 		},
-		view() {
-			this.$router.push({name: 'viewhealthrecord'})
+		view(healthRecordId) {
+			this.$router.push({name: 'viewhealthrecord', query: { healthRecordId } })
 		},
-		edit() {
-			this.$router.push({name: 'edithealthrecord'})
+		edit(healthRecordId) {
+			this.$router.push({name: 'edithealthrecord', query: { healthRecordId } })
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
-			})
+		del(healthRecordId) {
+			deleteConfirm(healthRecordId, ids => {
+				HealthRecord.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
 		}
 	}
 }

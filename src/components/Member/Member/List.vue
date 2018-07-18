@@ -28,8 +28,8 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column prop="name" label="学员名" align="center"></el-table-column>
-				<el-table-column prop="father" label="家长姓名" align="center"></el-table-column>
 				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+				<el-table-column prop="father" label="家长" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="注册时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>

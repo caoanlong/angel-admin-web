@@ -3,13 +3,7 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="标题/学员/创建人" v-model="find.title"></el-input>
-				</el-form-item>
-				<el-form-item label="课程类型">
-					<el-select placeholder="请选择" v-model="find.lessonType">
-						<el-option label="正姿舞蹈" value="正姿舞蹈"></el-option>
-						<el-option label="正姿跆拳道" value="正姿跆拳道"></el-option>
-					</el-select>
+					<el-input placeholder="标题/学员" v-model="find.keyword"></el-input>
 				</el-form-item>
 				<el-form-item label="上传时间">
 					<el-date-picker
@@ -36,10 +30,11 @@
 			<el-table 
 				:data="list" 
 				border style="width: 100%" 
-				size="mini" stripe>
+				size="mini" stripe 
+				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="title" label="标题" align="center"></el-table-column>
-				<el-table-column prop="studentName" label="学生" align="center"></el-table-column>
+				<el-table-column prop="member.name" label="学生" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
@@ -52,9 +47,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.lessonPhotoId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.lessonPhotoId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.lessonPhotoId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -67,17 +62,18 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import LessonPhoto from '../../../api/LessonPhoto'
 export default {
 	data() {
 		return {
 			pageIndex: 1,
 			pageSize: 10,
-			count: 10,
+			count: 0,
+			selectedList: [],
 			find: {
-				title: '',
-				lessonType: '',
-				startDate: '',
-				endDate: ''
+				keyword: '',
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			rangeDate: []
@@ -89,43 +85,51 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
+		},
+		selectionChange(data) {
+			this.selectedList = data.map(item => item.lessonPhotoId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
-			this.find.title = ''
+			this.find.keyword = ''
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					title: '正姿中心摄影',
-					studentName: '小明'
-				}
-				item.id = i
-				item.createTime = new Date().getTime() + (i * 1000000)
-				item.updateTime = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			LessonPhoto.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
 		add() {
 			this.$router.push({name: 'addlessonphoto'})
 		},
-		view() {
-			this.$router.push({name: 'viewlessonphoto'})
+		view(lessonPhotoId) {
+			this.$router.push({name: 'viewlessonphoto', query: { lessonPhotoId }})
 		},
-		edit() {
-			this.$router.push({name: 'editlessonphoto'})
+		edit(lessonPhotoId) {
+			this.$router.push({name: 'editlessonphoto', query: { lessonPhotoId }})
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
-			})
+		del(lessonPhotoId) {
+			deleteConfirm(lessonPhotoId, ids => {
+				LessonPhoto.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
 		}
 	}
 }

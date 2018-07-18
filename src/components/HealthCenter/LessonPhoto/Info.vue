@@ -9,10 +9,10 @@
 							<p>{{lessonPhoto.title}}</p>
 						</el-form-item>
 						<el-form-item label="学生">
-							<p>{{lessonPhoto.studentName}}</p>
+							<p>{{lessonPhoto.memberName}}</p>
 						</el-form-item>
 						<el-form-item label="图片">
-							<ImageUpload :files="lessonPhoto.image" :isPreview="true"/>
+							<ImageUpload :files="lessonPhoto.photos" :isPreview="true"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -26,18 +26,31 @@
 
 <script>
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import LessonPhoto from '../../../api/LessonPhoto'
 export default {
 	data() {
 		return {
 			lessonPhoto: {
-				title: '正姿中心摄影',
-				studentName: '小明',
-				image: ['#', '#', '#']
+				title: '',
+				memberId: '',
+				memberName: '',
+				photos: []
 			}
 		}
 	},
 	components: { ImageUpload },
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const lessonPhotoId = this.$route.query.lessonPhotoId
+			LessonPhoto.findById({ lessonPhotoId }).then(res => {
+				this.lessonPhoto = res
+				this.lessonPhoto.memberName = res.member.name
+				this.lessonPhoto.photos = res.photos.split(',')
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}

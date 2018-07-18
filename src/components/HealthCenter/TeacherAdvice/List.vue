@@ -3,7 +3,7 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="建议/会员/老师" v-model="find.keywords"></el-input>
+					<el-input placeholder="建议/会员/老师" v-model="find.keyword"></el-input>
 				</el-form-item>
 				<el-form-item label="创建时间">
 					<el-date-picker
@@ -30,26 +30,27 @@
 			<el-table 
 				:data="list" 
 				border style="width: 100%" 
-				size="mini" stripe>
+				size="mini" stripe 
+				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
-				<el-table-column prop="teacher" label="老师" align="center" width="90"></el-table-column>
+				<el-table-column prop="member.name" label="会员" align="center" width="90"></el-table-column>
+				<el-table-column prop="person.name" label="老师" align="center" width="90"></el-table-column>
 				<el-table-column prop="remark" label="建议" align="center" :show-overflow-tooltip="true"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
-				<el-table-column prop="update_time" label="更新时间" align="center" width="140">
+				<el-table-column prop="updateTime" label="更新时间" align="center" width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.update_time">{{ new Date(scope.row.update_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.updateTime">{{ new Date(scope.row.updateTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit()">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del()">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.teacherAdviceId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.teacherAdviceId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.teacherAdviceId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -62,16 +63,18 @@
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
+import TeacherAdvice from '../../../api/TeacherAdvice'
 export default {
 	data() {
 		return {
 			pageIndex: 1,
 			pageSize: 10,
-			count: 10,
+			count: 0,
+			selectedList: [],
 			find: {
-				keywords: '',
-				startDate: '',
-				endDate: ''
+				keyword: '',
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			rangeDate: []
@@ -83,45 +86,57 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
+		},
+		selectionChange(data) {
+			this.selectedList = data.map(item => item.teacherAdviceId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
-			this.find.keywords = ''
+			this.find.keyword = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.rangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					member: '小明',
-					teacher: '大毛',
-					remark: '治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时治疗的同时注意不要吃辛辣的食物，注意具备的卫生治疗的同时',
-				}
-				item.id = i
-				item.record_date = new Date().getTime() + (i * 1000000)
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			TeacherAdvice.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
 		add() {
 			this.$router.push({name: 'addteacheradvice'})
 		},
-		view() {
-			this.$router.push({name: 'viewteacheradvice'})
+		view(teacherAdviceId) {
+			this.$router.push({name: 'viewteacheradvice', query: { teacherAdviceId } })
 		},
-		edit() {
-			this.$router.push({name: 'editteacheradvice'})
+		edit(teacherAdviceId) {
+			this.$router.push({name: 'editteacheradvice', query: { teacherAdviceId } })
 		},
-		del() {
-			deleteConfirm('id', ids => {
-				Message.success('成功！')
-			})
+		del(teacherAdviceId) {
+			deleteConfirm(teacherAdviceId, ids => {
+				TeacherAdvice.del({ ids }).then(res => {
+					Message.success('成功！')
+					this.getList()
+				})
+			}, this.selectedList)
 		}
 	}
 }

@@ -14,16 +14,16 @@
 								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
-                        <el-form-item label="老师">
+						<el-form-item label="老师">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
-								v-model="advice.teacherName"
+								v-model="advice.personName"
 								:fetch-suggestions="getTeachers"
 								placeholder="请输入..."
 								@select="handSelectTeacher">
 							</el-autocomplete>
 						</el-form-item>
-                        <el-form-item label="建议">
+						<el-form-item label="建议">
 							<el-input type="textarea" :rows="5" v-model="advice.remark"></el-input>
 						</el-form-item>
 						<el-form-item>
@@ -39,13 +39,18 @@
 
 <script>
 import { Message } from 'element-ui'
+import TeacherAdvice from '../../../api/TeacherAdvice'
+import Member from '../../../api/Member'
+import Person from '../../../api/Person'
 export default {
 	data() {
 		return {
 			advice: {
-                memberName: '',
-                teacherName: '',
-                remark: ''
+				memberId: '',
+				memberName: '',
+				personId: '',
+				personName: '',
+				remark: ''
 			}
 		}
 	},
@@ -54,32 +59,29 @@ export default {
 	},
 	methods: {
 		getMembers(queryString, cb) {
-			let list = [
-				{ id: 1, name: '小明' },
-				{ id: 2, name: '小花' },
-				{ id: 3, name: '狗蛋' }
-			]
-			setTimeout(() => { cb(list) }, 500)
+			Member.suggest({
+				keyword: queryString
+			}).then(res => { cb(res) })
 		},
 		getTeachers(queryString, cb) {
-			let list = [
-				{ id: 1, name: '王老师' },
-				{ id: 2, name: '张老师' },
-				{ id: 3, name: '苟老师' }
-			]
-			setTimeout(() => { cb(list) }, 500)
+			Person.suggest({
+				keyword: queryString,
+				type: 'teacher'
+			}).then(res => { cb(res) })
 		},
 		handSelectMember(data) {
-			this.advice.memberId = data.id
+			this.advice.memberId = data.memberId
 			this.advice.memberName = data.name
 		},
 		handSelectTeacher(data) {
-			this.advice.teacherId = data.id
-			this.advice.teacherName = data.name
+			this.advice.personId = data.personId
+			this.advice.personName = data.name
 		},
 		save() {
-			Message.success('成功！')
-			this.$router.push({name: 'teacheradvice'})
+			TeacherAdvice.add(this.advice).then(res => {
+				Message.success('成功！')
+				this.$router.push({name: 'teacheradvice'})
+			})
 		},
 		back() {
 			this.$router.go(-1)

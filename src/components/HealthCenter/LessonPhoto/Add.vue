@@ -11,14 +11,14 @@
 						<el-form-item label="学生">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
-								v-model="lessonPhoto.studentName"
-								:fetch-suggestions="getStudents"
+								v-model="lessonPhoto.memberName"
+								:fetch-suggestions="getMembers"
 								placeholder="请输入内容"
-								@select="handSelectStudent">
+								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
 						<el-form-item label="图片">
-							<ImageUpload :files="lessonPhoto.image" :limitNum="10" @imgUrlBack="handleImageSuccess" :fixed="true" />
+							<ImageUpload :files="lessonPhoto.photos" :limitNum="10" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -34,39 +34,43 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
+import LessonPhoto from '../../../api/LessonPhoto'
+import Member from '../../../api/Member'
 export default {
 	data() {
 		return {
 			lessonPhoto: {
 				title: '',
-				studentName: '',
-				image: []
+				memberId: '',
+				memberName: '',
+				photos: []
 			}
 		}
 	},
 	components: { ImageUpload },
 	created() {
-		if (this.$route.query.name) this.lessonPhoto.studentName = this.$route.query.name
+		if (this.$route.query.name) this.lessonPhoto.memberName = this.$route.query.name
 	},
 	methods: {
-		getStudents(queryString, cb) {
-			let list = [
-				{ id: 1, name: '小明' },
-				{ id: 2, name: '小花' },
-				{ id: 3, name: '狗蛋' }
-			]
-			setTimeout(() => { cb(list) }, 500)
+		getMembers(queryString, cb) {
+			Member.suggest({
+				keyword: queryString
+			}).then(res => { cb(res) })
 		},
-		handSelectStudent(data) {
-			this.lessonPhoto.studentId = data.id
-			this.lessonPhoto.studentName = data.name
+		handSelectMember(data) {
+			this.lessonPhoto.memberId = data.memberId
+			this.lessonPhoto.memberName = data.name
 		},
 		save() {
-			Message.success('成功！')
-			this.$router.push({name: 'lessonphoto'})
+			const data = Object.assign({}, this.lessonPhoto)
+			data.photos = this.lessonPhoto.photos.join(',')
+			LessonPhoto.add(data).then(res => {
+				Message.success('成功！')
+				this.$router.push({name: 'lessonphoto'})
+			})
 		},
 		handleImageSuccess(res) {
-			this.lessonPhoto.image = res
+			this.lessonPhoto.photos = res
 		},
 		back() {
 			this.$router.go(-1)

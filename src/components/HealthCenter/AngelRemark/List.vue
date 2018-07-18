@@ -27,17 +27,17 @@
 				:data="list" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
-				<el-table-column prop="teacher" label="老师" align="center" width="90"></el-table-column>
+				<el-table-column prop="member.name" label="会员" align="center" width="90"></el-table-column>
+				<el-table-column prop="person.name" label="老师" align="center" width="90"></el-table-column>
 				<el-table-column prop="remark" label="留言" align="center" :show-overflow-tooltip="true"></el-table-column>
-				<el-table-column prop="create_time" label="创建时间" align="center"  width="140">
+				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
-						<span v-if="scope.row.create_time">{{ new Date(scope.row.create_time).getTime() | getdatefromtimestamp()}}</span>
+						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view()">查看</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.angelRemarkId)">查看</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -49,6 +49,7 @@
 <script>
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
+import AngelRemark from '../../../api/AngelRemark'
 export default {
 	data() {
 		return {
@@ -57,8 +58,8 @@ export default {
 			count: 10,
 			find: {
 				keywords: '',
-				startDate: '',
-				endDate: ''
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			rangeDate: []
@@ -70,40 +71,41 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		pageChange(index) {
 			this.pageIndex = index
+			this.getList()
 		},
 		pageSizeChange(size) {
 			this.pageSize = size
+			this.getList()
 		},
 		reset() {
 			this.find.keywords = ''
+			this.find.keyword = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.rangeDate = []
+			this.getList()
 		},
 		getList() {
-			for (let i = 0; i < 10; i++) {
-				const item = {
-					member: '小明',
-					teacher: '大毛',
-					remark: '感谢天使无忧的正姿老师王老师，祝老师万事如意身体健康！感谢天使无忧的正姿老师王老师，祝老师万事如意身体健康！',
-					create_user: {
-						name: '龙哥'
-					},
-					update_user: {
-						name: '龙哥'
-					}
-				}
-				item.id = i
-				item.record_date = new Date().getTime() + (i * 1000000)
-				item.create_time = new Date().getTime() + (i * 1000000)
-				item.update_time = new Date().getTime() + (i * 1000000)
-				this.list.push(item)
-			}
+			AngelRemark.find({
+				pageIndex: this.pageIndex,
+				pageSize: this.pageSize,
+				keyword: this.find.keyword,
+				startTime: this.find.startTime,
+				endTime: this.find.endTime
+			}).then(res => {
+				this.list = res.rows
+				this.count = res.count
+			})
 		},
-		view() {
-			this.$router.push({name: 'viewangelremark'})
+		view(angelRemarkId) {
+			this.$router.push({name: 'viewangelremark', query: { angelRemarkId } })
 		}
 	}
 }

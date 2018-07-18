@@ -6,10 +6,10 @@
 				<el-row>
 					<el-col :span="12" :offset="5">
                         <el-form-item label="会员">
-                            <p>{{remark.member}}</p>
+                            <p>{{remark.memberName}}</p>
 						</el-form-item>
                         <el-form-item label="老师">
-                            <p>{{remark.teacher}}</p>
+                            <p>{{remark.personName}}</p>
 						</el-form-item>
                         <el-form-item label="建议">
                             <p>{{remark.remark}}</p>
@@ -26,17 +26,31 @@
 
 <script>
 import { Message } from 'element-ui'
+import AngelRemark from '../../../api/AngelRemark'
 export default {
 	data() {
 		return {
-			remark: {
-                member: '小明',
-                teacher: '大毛',
-                remark: '感谢天使无忧的正姿老师王老师，祝老师万事如意身体健康！感谢天使无忧的正姿老师王老师，祝老师万事如意身体健康！'
+			angelRemark: {
+				memberId: '',
+                memberName: '',
+                personId: '',
+                personName: '',
+                remark: ''
 			}
 		}
 	},
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const angelRemarkId = this.$route.query.angelRemarkId
+			AngelRemark.findById({ angelRemarkId }).then(res => {
+				this.angelRemark = res
+				this.angelRemark.memberName = res.member.name
+				this.angelRemark.personName = res.person.name
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}
