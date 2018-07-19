@@ -5,6 +5,11 @@
 				<el-form-item label="关键字">
 					<el-input placeholder="姓名/手机号" v-model="find.keyword"></el-input>
 				</el-form-item>
+				<el-form-item label="所属门店" v-if="!storeId">
+					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
+						<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+					</el-select>
+				</el-form-item>
 				<el-form-item label="考勤状态">
 					<el-select placeholder="请选择" v-model="find.status" >
 						<el-option label="打卡成功" :value="false"></el-option>
@@ -35,6 +40,7 @@
 				size="mini" stripe>
 				<el-table-column prop="member.name" label="会员姓名" align="center"></el-table-column>
 				<el-table-column prop="member.mobile" label="手机号" align="center"></el-table-column>
+				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
 				<el-table-column prop="status" label="考勤状态" align="center">
 					<template slot-scope="scope">
 						<el-tag size="mini" type="success" v-if="scope.row.status == 'success'">打卡成功</el-tag>
@@ -53,9 +59,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import Attendance from '../../../api/Attendance'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -64,17 +72,24 @@ export default {
 			count: 10,
 			find: {
 				keyword: '',
+				storeId: '',
 				status: '',
 				startTime: '',
 				endTime: ''
 			},
 			list: [],
+			stores: [],
 			createRangeDate: []
 		}
 	},
+	computed: {
+		...mapGetters(['storeId'])
+	},
 	components: { Page },
 	created() {
+		if (this.storeId) this.find.storeId = this.storeId
 		this.getList()
+		this.getStores()
 	},
 	methods: {
 		selectDateRange(date) {
@@ -91,6 +106,7 @@ export default {
 		},
 		reset() {
 			this.find.keyword = ''
+			this.find.storeId = this.storeId ? this.storeId : ''
 			this.find.status = ''
 			this.find.startTime = ''
 			this.find.endTime = ''
@@ -106,7 +122,8 @@ export default {
 				keyword: this.find.keyword,
 				status: this.find.status,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				storeId: this.find.storeId,
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -114,6 +131,13 @@ export default {
 		},
 		view() {
 			this.$router.push({name: 'viewattendance'})
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
 		}
 	}
 }

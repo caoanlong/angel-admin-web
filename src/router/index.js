@@ -208,6 +208,18 @@ const router = new Router({
 							component: () => import ('../components/Member/Member/List')
 						},
 						{
+							path: '/addmember',
+							name: 'addmember',
+							meta: { title: '添加会员' },
+							component: () => import ('../components/Member/Member/Add')
+						},
+						{
+							path: '/editmember',
+							name: 'editmember',
+							meta: { title: '编辑会员' },
+							component: () => import ('../components/Member/Member/Edit')
+						},
+						{
 							path: '/viewmember',
 							name: 'viewmember',
 							meta: { title: '查看会员' },
@@ -362,6 +374,30 @@ const router = new Router({
 							name: 'viewrole',
 							meta: { title: '查看角色' },
 							component: () => import ('../components/System/Role/Info')
+						},
+						{
+							path: '/stores',
+							name: 'stores',
+							meta: { title: '门店列表' },
+							component: () => import ('../components/System/Stores/List')
+						},
+						{
+							path: '/addstores',
+							name: 'addstores',
+							meta: { title: '添加门店' },
+							component: () => import ('../components/System/Stores/Add')
+						},
+						{
+							path: '/editstores',
+							name: 'editstores',
+							meta: { title: '编辑门店' },
+							component: () => import ('../components/System/Stores/Edit')
+						},
+						{
+							path: '/viewstores',
+							name: 'viewstores',
+							meta: { title: '查看门店' },
+							component: () => import ('../components/System/Stores/Info')
 						},
 						{
 							path: '/dict',

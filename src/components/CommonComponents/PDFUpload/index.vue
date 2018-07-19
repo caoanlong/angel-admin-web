@@ -5,7 +5,7 @@
 			<div class="controller">
 				<div class="controllerBtn">
 					<a class="perviewBtn" target="_blank" :href="imgUrl + file"></a>
-					<div class="delBtn" @click.stop="delImg()"></div>
+					<div class="delBtn" @click.stop="delImg()" v-if="!isPreview"></div>
 				</div>
 			</div>
 		</div>
@@ -34,6 +34,10 @@ export default {
         file: {
             type: String,
             default: ''
+        },
+        isPreview: {
+        	type: Boolean,
+        	default: false
         }
     },
     data() {

@@ -49,6 +49,7 @@ export default {
 	},
 	components: { ImageUpload },
 	created() {
+		if (this.$route.query.memberId) this.lessonPhoto.memberId = this.$route.query.memberId
 		if (this.$route.query.name) this.lessonPhoto.memberName = this.$route.query.name
 	},
 	methods: {

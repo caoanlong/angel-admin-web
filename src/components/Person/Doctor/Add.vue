@@ -23,6 +23,11 @@
 								<el-option label="女" value="female"></el-option>
 							</el-select>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="doctor.storeId" placeholder="请选择" :disabled="!!storeId">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="简介">
 							<el-input type="textarea" v-model="doctor.remark"></el-input>
 						</el-form-item>
@@ -38,9 +43,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import Person from '../../../api/Person'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -51,11 +58,20 @@ export default {
 				mobile: '',
 				age: '',
 				sex: '',
+				storeId: '',
 				remark: ''
-			}
+			},
+			stores: []
 		}
 	},
+	computed: {
+		...mapGetters(['storeId'])
+	},
 	components: { ImageUpload },
+	created() {
+		this.getStores()
+		if (this.storeId) this.doctor.storeId = this.storeId
+	},
 	methods: {
 		save() {
 			Person.add(this.doctor).then(res => {
@@ -65,6 +81,13 @@ export default {
 		},
 		handleAvatarSuccess(res) {
 			this.doctor.avatar = res[0]
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
 		},
 		back() {
 			this.$router.go(-1)

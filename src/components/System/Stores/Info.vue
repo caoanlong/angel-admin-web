@@ -1,30 +1,21 @@
 <template>
 	<div class="main-content">
 		<el-card class="box-card">
-			<div slot="header">查看医生</div>
+			<div slot="header">查看门店</div>
 			<el-form label-width="120px">
 				<el-row>
 					<el-col :span="14" :offset="4">
-						<el-form-item label="头像">
-							<ImageUpload :files="[doctor.avatar]" :isPreview="true"/>
+						<el-form-item label="LOGO">
+							<ImageUpload :files="[store.logo]" :isPreview="true"/>
 						</el-form-item>
-						<el-form-item label="姓名">
-							<p>{{doctor.name}}</p>
+						<el-form-item label="名称">
+							<p>{{store.name}}</p>
 						</el-form-item>
-						<el-form-item label="手机号">
-							<p>{{doctor.mobile}}</p>
-						</el-form-item>
-						<el-form-item label="年龄">
-							<p>{{doctor.age}}</p>
-						</el-form-item>
-						<el-form-item label="性别">
-							<p>{{doctor.sex == 'male' ? '男' : '女'}}</p>
-						</el-form-item>
-						<el-form-item label="所属门店">
-							<p>{{doctor.store.name}}</p>
+						<el-form-item label="电话">
+							<p>{{store.mobile}}</p>
 						</el-form-item>
 						<el-form-item label="简介">
-							<p>{{doctor.remark}}</p>
+							<p>{{store.remark}}</p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -39,18 +30,14 @@
 <script>
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
-import Person from '../../../api/Person'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
-			doctor: {
-				avatar: '',
+			store: { 
 				name: '',
 				mobile: '',
-				age: '',
-				sex: '',
-				store: '',
-				storeId: '',
+				logo: '',
 				remark: ''
 			}
 		}
@@ -61,9 +48,9 @@ export default {
 	},
 	methods: {
 		getInfo() {
-			const personId = this.$route.query.personId
-			Person.findById({ personId }).then(res => {
-				this.doctor = res
+			const storeId = this.$route.query.storeId
+			SysStore.findById({ storeId }).then(res => {
+				this.store = res
 			})
 		},
 		back() {

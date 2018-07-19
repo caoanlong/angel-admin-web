@@ -55,6 +55,7 @@ export default {
 		}
 	},
 	created() {
+		if (this.$route.query.memberId) this.advice.memberId = this.$route.query.memberId
 		if (this.$route.query.name) this.advice.memberName = this.$route.query.name
 	},
 	methods: {

@@ -8,7 +8,7 @@
 						<el-form-item label="名称">
 							<el-input placeholder="请输入..." v-model="record.name"></el-input>
 						</el-form-item>
-                        <el-form-item label="会员">
+						<el-form-item label="会员">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
 								v-model="record.memberName"
@@ -17,31 +17,30 @@
 								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
-                        <el-form-item label="老师">
+						<el-form-item label="老师">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
-								v-model="record.teacherName"
-								:fetch-suggestions="getTeachers"
+								v-model="record.personName"
+								:fetch-suggestions="getPersons"
 								placeholder="请输入..."
-								@select="handSelectTeacher">
+								@select="handSelectPerson">
 							</el-autocomplete>
 						</el-form-item>
-                        <el-form-item label="类型">
-							<el-select style="width:100%" placeholder="请选择" v-model="record.type">
-								<el-option label="筛查报告" value="筛查报告"></el-option>
-								<el-option label="检测报告" value="检测报告"></el-option>
+						<el-form-item label="类型">
+							<el-select style="width:100%" placeholder="请选择" v-model="record.typeId">
+								<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 							</el-select>
 						</el-form-item>
-                        <el-form-item label="报告日期">
-                            <el-date-picker
-                                style="width:100%"
-                                v-model="record.record_date"
-                                type="date" 
-                                value-format="timestamp">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="报告文件">
-							<ImageUpload :files="record.file" :limitNum="10" @imgUrlBack="handleRecordSuccess"/>
+						<el-form-item label="报告日期">
+							<el-date-picker
+								style="width:100%"
+								v-model="record.recordDate"
+								type="date" 
+								value-format="timestamp">
+							</el-date-picker>
+						</el-form-item>
+						<el-form-item label="报告文件">
+							<pdfUpload :file="record.file" @fileUrlBack="handleFileSuccess"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -56,51 +55,73 @@
 
 <script>
 import { Message } from 'element-ui'
-import ImageUpload from '../../CommonComponents/ImageUpload'
+import pdfUpload from '../../CommonComponents/PDFUpload'
+import HealthRecord from '../../../api/HealthRecord'
+import Member from '../../../api/Member'
+import Person from '../../../api/Person'
+import SysDict from '../../../api/SysDict'
 export default {
 	data() {
 		return {
 			record: {
-				name: '小明足疾筛查报告',
-                memberName: '小明',
-                teacherName: '王老师',
-                type: '筛查报告',
-                record_date: new Date(),
-                file: ['#', '#']
-			}
+				name: '',
+				memberId: '',
+				memberName: '',
+				personId: '',
+				personName: '',
+				typeId: '',
+				recordDate: '',
+				file: ''
+			},
+			types: []
 		}
 	},
-	components: { ImageUpload },
+	components: { pdfUpload },
+	created() {
+		this.getTypes()
+	},
 	methods: {
 		getMembers(queryString, cb) {
-			let list = [
-				{ id: 1, name: '小明' },
-				{ id: 2, name: '小花' },
-				{ id: 3, name: '狗蛋' }
-			]
-			setTimeout(() => { cb(list) }, 500)
+			Member.suggest({
+				keyword: queryString
+			}).then(res => { cb(res) })
 		},
-		getTeachers(queryString, cb) {
-			let list = [
-				{ id: 1, name: '王老师' },
-				{ id: 2, name: '张老师' },
-				{ id: 3, name: '苟老师' }
-			]
-			setTimeout(() => { cb(list) }, 500)
+		getPersons(queryString, cb) {
+			Person.suggest({
+				keyword: queryString,
+				type: 'doctor'
+			}).then(res => { cb(res) })
+		},
+		getTypes() {
+			SysDict.findListByType({ type: 'recordType' }).then(res => {
+				this.types = res
+				this.getInfo()
+			})
+		},
+		getInfo() {
+			const healthRecordId = this.$route.query.healthRecordId
+			HealthRecord.findById({ healthRecordId }).then(res => {
+				this.record = res
+				this.record.memberName = res.member.name
+				this.record.personName = res.person.name
+				this.record.recordDate = new Date(res.recordDate).getTime()
+			})
 		},
 		handSelectMember(data) {
-			this.record.memberId = data.id
+			this.record.memberId = data.memberId
 			this.record.memberName = data.name
 		},
-		handSelectTeacher(data) {
-			this.record.teacherId = data.id
-			this.record.teacherName = data.name
+		handSelectPerson(data) {
+			this.record.personId = data.personId
+			this.record.personName = data.name
 		},
 		save() {
-			Message.success('成功！')
-			this.$router.push({name: 'healthrecord'})
+			HealthRecord.update(this.record).then(res => {
+				Message.success('成功！')
+				this.$router.push({name: 'healthrecord'})
+			})
 		},
-        handleRecordSuccess(res) {
+		handleFileSuccess(res) {
 			this.record.file = res
 		},
 		back() {

@@ -45,7 +45,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column width="250" align="center" fixed="right">
-					<template slot-scope="scope" v-if="scope.row.roleId != '1014694057894612992'">
+					<template slot-scope="scope" v-if="scope.row.roleId != '1'">
 						<el-button type="warning" size="mini" @click="auth(scope.row.roleId)">权限设置</el-button>
 						<el-button type="success" size="mini" @click="view(scope.row.roleId)">查看</el-button>
 						<el-button type="primary" size="mini" @click="edit(scope.row.roleId)">编辑</el-button>

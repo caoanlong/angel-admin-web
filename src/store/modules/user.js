@@ -5,7 +5,8 @@ const user = {
 		name: localStorage.getItem('name'),
 		mobile: localStorage.getItem('mobile'),
 		token: localStorage.getItem('token'),
-		avatar: localStorage.getItem('avatar')
+		avatar: localStorage.getItem('avatar'),
+		storeId: localStorage.getItem('storeId')
 	},
 	mutations: {
 		SET_NAME: (state, name) => {
@@ -23,7 +24,11 @@ const user = {
 		SET_AVATAR: (state, avatar) => {
 			state.avatar = avatar
 			localStorage.setItem('avatar', avatar)
-		}
+		},
+		SET_STOREID: (state, storeId) => {
+			state.storeId = storeId
+			localStorage.setItem('storeId', storeId)
+		},
 	},
 	actions: {
 		login({ commit }, token) {
@@ -35,6 +40,7 @@ const user = {
 				commit('SET_MOBILE', '')
 				commit('SET_AVATAR', '')
 				commit('SET_TOKEN', '')
+				commit('SET_STOREID', '')
 				localStorage.clear()
 				sessionStorage.clear()
 				resolve()
@@ -46,6 +52,7 @@ const user = {
 					commit('SET_NAME', res.data.data.name)
 					commit('SET_MOBILE', res.data.data.mobile)
 					commit('SET_AVATAR', res.data.data.avatar)
+					commit('SET_STOREID', res.data.data.storeId)
 					resolve()
 				})
 			})

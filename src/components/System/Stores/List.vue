@@ -2,17 +2,12 @@
 	<div class="main-content">
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
-				<el-form-item label="关键字">
-					<el-input placeholder="姓名/手机号" v-model="find.keyword"></el-input>
-				</el-form-item>
-				<el-form-item label="所属门店" v-if="!storeId">
-					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
-						<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
-					</el-select>
+				<el-form-item label="名称">
+					<el-input placeholder="请输入..." v-model="find.name"></el-input>
 				</el-form-item>
 				<el-form-item label="创建时间">
 					<el-date-picker
-						v-model="createRangeDate"
+						v-model="rangeDate"
 						type="daterange" 
 						value-format="timestamp" 
 						range-separator="至"
@@ -38,17 +33,9 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="姓名" align="center"></el-table-column>
-				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
-				<el-table-column prop="age" label="年龄" align="center"></el-table-column>
-				<el-table-column label="性别" align="center">
-					<template slot-scope="scope">
-						<span v-if="scope.row.sex == 'male'">男</span>
-						<span v-else>女</span>
-					</template>
-				</el-table-column>
-				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
-				<el-table-column prop="remark" label="简介" align="center"></el-table-column>
+				<el-table-column label="名称" prop="name"></el-table-column>
+				<el-table-column label="电话" prop="mobile"></el-table-column>
+				<el-table-column label="简介" prop="remark"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
@@ -61,9 +48,9 @@
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
 					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view(scope.row.personId)">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit(scope.row.personId)">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del(scope.row.personId)">删除</el-button>
+						<el-button type="success" size="mini" @click="view(scope.row.storeId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.storeId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.storeId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -73,11 +60,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
-import Person from '../../../api/Person'
 import SysStore from '../../../api/SysStore'
 export default {
 	data() {
@@ -87,24 +72,17 @@ export default {
 			count: 10,
 			selectedList: [],
 			find: {
-				keyword: '',
-				storeId: '',
+				name: '',
 				startTime: '',
 				endTime: ''
 			},
 			list: [],
-			stores: [],
-			createRangeDate: []
+			rangeDate: []
 		}
-	},
-	computed: {
-		...mapGetters(['storeId'])
 	},
 	components: { Page },
 	created() {
-		if (this.storeId) this.find.storeId = this.storeId
 		this.getList()
-		this.getStores()
 	},
 	methods: {
 		selectDateRange(date) {
@@ -112,7 +90,7 @@ export default {
 			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
-			this.selectedList = data.map(item => item.personId)
+			this.selectedList = data.map(item => item.storeId)
 		},
 		pageChange(index) {
 			this.pageIndex = index
@@ -123,52 +101,42 @@ export default {
 			this.getList()
 		},
 		reset() {
-			this.find.keyword = ''
-			this.find.storeId = this.storeId ? this.storeId : ''
+			this.find.name = ''
 			this.find.startTime = ''
-            this.find.endTime = ''
-            this.pageIndex = 1
+			this.find.endTime = ''
+			this.pageIndex = 1
 			this.pageSize = 10
-			this.createRangeDate = []
+			this.rangeDate = []
 			this.getList()
 		},
 		getList() {
-			Person.find({
+			SysStore.find({
 				pageIndex: this.pageIndex,
 				pageSize: this.pageSize,
-				keyword: this.find.keyword,
+				keyword: this.find.name,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime,
-				storeId: this.find.storeId,
-				type: 'teacher'
+				endTime: this.find.endTime
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
 			})
 		},
 		add() {
-			this.$router.push({name: 'addteacher'})
+			this.$router.push({name: 'addstores'})
 		},
-		view(personId) {
-			this.$router.push({name: 'viewteacher', query: { personId }})
+		view(storeId) {
+			this.$router.push({name: 'viewstores', query: { storeId } })
 		},
-		edit(personId) {
-			this.$router.push({name: 'editteacher', query: { personId }})
+		edit(storeId) {
+			this.$router.push({name: 'editstores', query: { storeId } })
 		},
-		del(personId) {
-            deleteConfirm(personId, ids => {
-				Person.del({ ids }).then(res => {
+		del(storeId) {
+			deleteConfirm(storeId, ids => {
+				SysStore.del({ ids }).then(res => {
 					Message.success('成功！')
 					this.getList()
 				})
 			}, this.selectedList)
-        },
-        getStores() {
-			SysStore.find({
-				pageSize: 1000
-			}).then(res => {
-				this.stores = res.rows
-			})
 		}
 	}
 }

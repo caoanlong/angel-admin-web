@@ -28,8 +28,8 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column prop="member.name" label="会员" align="center"></el-table-column>
-				<el-table-column prop="lessonSet.name" label="课程名称" align="center"></el-table-column>
-				<el-table-column prop="lessonSet.type.value" label="课程类型" align="center"></el-table-column>
+				<el-table-column prop="product.name" label="课程名称" align="center"></el-table-column>
+				<el-table-column prop="product.label.value" label="课程类型" align="center"></el-table-column>
 				<el-table-column prop="num" label="已上课时" align="center"></el-table-column>
 				<el-table-column prop="totalNum" label="总课时" align="center"></el-table-column>
 				<el-table-column prop="validityDate" label="有效期至" align="center"  width="140">

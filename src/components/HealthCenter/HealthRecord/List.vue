@@ -39,9 +39,9 @@
 				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="名称" align="center"></el-table-column>
-				<el-table-column prop="member" label="会员" align="center" width="90"></el-table-column>
-				<el-table-column prop="teacher" label="医生" align="center" width="90"></el-table-column>
-				<el-table-column prop="type" label="类型" align="center" width="90"></el-table-column>
+				<el-table-column prop="member.name" label="会员" align="center" width="90"></el-table-column>
+				<el-table-column prop="person.name" label="医生" align="center" width="90"></el-table-column>
+				<el-table-column prop="type.value" label="类型" align="center" width="90"></el-table-column>
 				<el-table-column prop="recordDate" label="报告日期" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.recordDate">{{ new Date(scope.row.recordDate).getTime() | getdatefromtimestamp(true)}}</span>

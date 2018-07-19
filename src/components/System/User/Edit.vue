@@ -20,9 +20,14 @@
 						<el-form-item label="是否禁用">
 							<el-switch v-model="user.isDisabled"></el-switch>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="user.storeId" placeholder="请选择">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="角色权限">
 							<el-select style="width: 100%" v-model="user.roleId" placeholder="请选择">
-								<el-option v-for="role in roles" :key="role.roleId" :label="role.name" :value="role.roleId"></el-option>
+								<el-option v-for="role in roles" :key="role.roleId" :label="role.name" :value="role.roleId" :disabled="role.roleId == '1'"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item>
@@ -41,6 +46,7 @@ import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import SysUser from '../../../api/SysUser'
 import SysRole from '../../../api/SysRole'
+import SysStore from '../../../api/SysStore'
 export default {
     data() {
 		return {
@@ -50,14 +56,17 @@ export default {
 				password: '',
 				isDisabled: false,
 				roleId: '',
+				storeId: '',
 				avatar: ''
 			},
-			roles: []
+			roles: [],
+			stores: []
 		}
     },
 	components: { ImageUpload },
 	created() {
 		this.getRoles()
+		this.getStores()
 	},
     methods: {
         save() {
@@ -83,6 +92,13 @@ export default {
 				this.getInfo()
             })
         },
+        getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
+		},
         back() {
 			this.$router.go(-1)
 		}

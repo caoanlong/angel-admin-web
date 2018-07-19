@@ -51,7 +51,8 @@
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column prop="name" label="姓名"></el-table-column>
 				<el-table-column prop="mobile" label="电话" align="center" width="100"></el-table-column>
-				<el-table-column prop="role.name" label="角色" align="center"></el-table-column>
+                <el-table-column prop="role.name" label="角色" align="center"></el-table-column>
+				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
 				<el-table-column prop="isDisabled" label="状态" align="center" width="60">
 					<template slot-scope="scope">
 						<el-tag size="mini" type="info" v-if="scope.row.isDisabled">禁用</el-tag>

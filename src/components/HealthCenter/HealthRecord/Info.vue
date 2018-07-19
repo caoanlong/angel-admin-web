@@ -6,22 +6,22 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="名称">
-                            <p>{{record.name}}</p>
+							<p>{{record.name}}</p>
 						</el-form-item>
-                        <el-form-item label="会员">
-                            <p>{{record.member}}</p>
+						<el-form-item label="会员">
+							<p>{{record.memberName}}</p>
 						</el-form-item>
-                        <el-form-item label="老师">
-                            <p>{{record.teacher}}</p>
+						<el-form-item label="老师">
+							<p>{{record.personName}}</p>
 						</el-form-item>
-                        <el-form-item label="类型">
-                            <p>{{record.type}}</p>
+						<el-form-item label="类型">
+							<p>{{record.type && record.type.value}}</p>
 						</el-form-item>
-                        <el-form-item label="报告日期">
-                            <p>{{record.record_date | getdatefromtimestamp(true)}}</p>
-                        </el-form-item>
-                        <el-form-item label="报告图">
-							<ImageUpload :files="record.file" :isPreview="true"/>
+						<el-form-item label="报告日期">
+							<p>{{record.recordDate | getdatefromtimestamp(true)}}</p>
+						</el-form-item>
+						<el-form-item label="报告文件">
+							<pdfUpload :file="record.file" :isPreview="true"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -35,23 +35,36 @@
 
 <script>
 import { Message } from 'element-ui'
-import ImageUpload from '../../CommonComponents/ImageUpload'
+import pdfUpload from '../../CommonComponents/PDFUpload'
+import HealthRecord from '../../../api/HealthRecord'
 export default {
 	data() {
 		return {
 			record: {
-				name: '小明足疾筛查报告',
-                member: '小明',
-                teacher: '大毛',
-                type: '筛查报告',
-                record_date: new Date(),
-                image: '#',
-                file: ['#', '#']
+				name: '',
+				memberName: '',
+				personId: '',
+				personName: '',
+				typeId: '',
+				recordDate: '',
+				file: ''
 			}
 		}
 	},
-	components: { ImageUpload },
+	components: { pdfUpload },
+	created() {
+		this.getInfo()
+	},
 	methods: {
+		getInfo() {
+			const healthRecordId = this.$route.query.healthRecordId
+			HealthRecord.findById({ healthRecordId }).then(res => {
+				this.record = res
+				this.record.memberName = res.member.name
+				this.record.personName = res.person.name
+				this.record.recordDate = new Date(res.recordDate).getTime()
+			})
+		},
 		back() {
 			this.$router.go(-1)
 		}
