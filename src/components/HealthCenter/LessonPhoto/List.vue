@@ -101,6 +101,12 @@ export default {
 		},
 		reset() {
 			this.find.keyword = ''
+			this.find.startTime = ''
+			this.find.endTime = ''
+			this.pageIndex = 1
+			this.pageSize = 10
+			this.rangeDate = []
+			this.getList()
 		},
 		getList() {
 			LessonPhoto.find({

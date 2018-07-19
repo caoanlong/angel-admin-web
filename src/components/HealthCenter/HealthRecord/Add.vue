@@ -41,7 +41,7 @@
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item label="报告文件">
-							<ImageUpload :files="record.file" :limitNum="10" @imgUrlBack="handleRecordSuccess"/>
+							<pdfUpload :file="record.file" @fileUrlBack="handleFileSuccess"/>
 						</el-form-item>
 						<el-form-item>
 							<el-button type="primary" @click="save">保存</el-button>
@@ -56,7 +56,7 @@
 
 <script>
 import { Message } from 'element-ui'
-import ImageUpload from '../../CommonComponents/ImageUpload'
+import pdfUpload from '../../CommonComponents/PDFUpload'
 export default {
 	data() {
 		return {
@@ -66,11 +66,11 @@ export default {
                 teacherName: '',
                 type: '',
                 record_date: '',
-                file: []
+                file: ''
 			}
 		}
 	},
-	components: { ImageUpload },
+	components: { pdfUpload },
 	created() {
 		if (this.$route.query.name) this.record.memberName = this.$route.query.name
 	},
@@ -103,7 +103,7 @@ export default {
 			Message.success('成功！')
 			this.$router.push({name: 'healthrecord'})
 		},
-        handleRecordSuccess(res) {
+        handleFileSuccess(res) {
 			this.record.file = res
 		},
 		back() {
