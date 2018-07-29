@@ -5,7 +5,7 @@
 				<el-form-item label="关键字">
 					<el-input placeholder="姓名/手机号" v-model="find.keyword"></el-input>
 				</el-form-item>
-				<el-form-item label="所属门店" v-if="!storeId">
+				<el-form-item label="所属门店" v-if="storeId == null || storeId == 'null'">
 					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
 						<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
 					</el-select>
@@ -102,7 +102,7 @@ export default {
 	},
 	components: { Page },
 	created() {
-		if (this.storeId) this.find.storeId = this.storeId
+		this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 		this.getList()
 		this.getStores()
 	},
@@ -124,7 +124,7 @@ export default {
 		},
 		reset() {
 			this.find.keyword = ''
-			this.find.storeId = this.storeId ? this.storeId : ''
+			this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 			this.find.startTime = ''
 			this.find.endTime = ''
 			this.pageIndex = 1

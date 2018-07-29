@@ -11,6 +11,9 @@
 						<el-form-item label="学生">
 							<p>{{lessonPhoto.memberName}}</p>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<p>{{lessonPhoto.store.name}}</p>
+						</el-form-item>
 						<el-form-item label="图片">
 							<ImageUpload :files="lessonPhoto.photos" :isPreview="true"/>
 						</el-form-item>
@@ -34,6 +37,7 @@ export default {
 				title: '',
 				memberId: '',
 				memberName: '',
+				store: '',
 				photos: []
 			}
 		}

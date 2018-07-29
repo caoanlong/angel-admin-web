@@ -3,7 +3,12 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="会员/订单号/名称" v-model="find.keywords"></el-input>
+					<el-input placeholder="会员/订单号/名称" v-model="find.keyword"></el-input>
+				</el-form-item>
+				<el-form-item label="所属门店" v-if="storeId == null || storeId == 'null'">
+					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
+						<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item label="下单时间">
 					<el-date-picker
@@ -36,6 +41,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="totalPrice" label="价格" align="center"></el-table-column>
+				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
 				<el-table-column label="状态" align="center">
 					<template slot-scope="scope">
 						<el-tag size="mini" type="success" v-if="scope.row.status == 'success'">支付成功</el-tag>
@@ -59,9 +65,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import Order from '../../../api/Order'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -69,17 +77,24 @@ export default {
 			pageSize: 10,
 			count: 10,
 			find: {
-				keywords: '',
+				keyword: '',
+				storeId: '',
 				startTime: '',
 				endTime: ''
 			},
 			list: [],
+			stores: [],
 			saleRangeDate: []
 		}
 	},
+	computed: {
+		...mapGetters(['storeId'])
+	},
 	components: { Page },
 	created() {
+		this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 		this.getList()
+		this.getStores()
 	},
 	methods: {
 		selectDateRange(date) {
@@ -96,6 +111,7 @@ export default {
 		},
 		reset() {
 			this.find.keyword = ''
+			this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 			this.find.startTime = ''
 			this.find.endTime = ''
 			this.pageIndex = 1
@@ -109,7 +125,8 @@ export default {
 				pageSize: this.pageSize,
 				keyword: this.find.keyword,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				storeId: this.find.storeId
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -118,6 +135,13 @@ export default {
 		view(orderId) {
 			this.$router.push({name: 'viewmemorder', query: { orderId }})
 		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
+		}
 	}
 }
 </script>

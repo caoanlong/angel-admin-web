@@ -10,6 +10,11 @@
 						<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 					</el-select>
 				</el-form-item>
+				<el-form-item label="所属门店" v-if="storeId == null || storeId == 'null'">
+					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
+						<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+					</el-select>
+				</el-form-item>
 				<el-form-item label="上传时间">
 					<el-date-picker
 						v-model="rangeDate"
@@ -47,6 +52,7 @@
 						<span v-if="scope.row.recordDate">{{ new Date(scope.row.recordDate).getTime() | getdatefromtimestamp(true)}}</span>
 					</template>
 				</el-table-column>
+				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
@@ -71,11 +77,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
 import { deleteConfirm } from '../../../common/utils'
 import HealthRecord from '../../../api/HealthRecord'
 import SysDict from '../../../api/SysDict'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -86,18 +94,25 @@ export default {
 			find: {
 				keywords: '',
 				typeId: '',
+				storeId: '',
 				startDate: '',
 				endDate: ''
 			},
 			list: [],
 			rangeDate: [],
-			types: []
+			types: [],
+			stores: []
 		}
+	},
+	computed: {
+		...mapGetters(['storeId'])
 	},
 	components: { Page },
 	created() {
+		this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 		this.getList()
 		this.getTypes()
+		this.getStores()
 	},
 	methods: {
 		selectDateRange(date) {
@@ -118,6 +133,7 @@ export default {
 		reset() {
 			this.find.keyword = ''
 			this.find.typeId = ''
+			this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 			this.find.startTime = ''
 			this.find.endTime = ''
 			this.pageIndex = 1
@@ -132,7 +148,8 @@ export default {
 				keyword: this.find.keyword,
 				typeId: this.find.typeId,
 				startTime: this.find.startTime,
-				endTime: this.find.endTime
+				endTime: this.find.endTime,
+				storeId: this.find.storeId
 			}).then(res => {
 				this.list = res.rows
 				this.count = res.count
@@ -159,6 +176,13 @@ export default {
 					this.getList()
 				})
 			}, this.selectedList)
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
 		}
 	}
 }

@@ -109,7 +109,7 @@ export function deleteConfirm (id, callback, idList) {
 	} else {
 		ids = idList
 	}
-	if(!ids) {
+	if(!ids || ids.length == 0) {
 		Message({ type: 'warning', message: '请选择' })
 		return
 	}

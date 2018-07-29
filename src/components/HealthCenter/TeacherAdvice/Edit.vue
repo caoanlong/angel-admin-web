@@ -23,6 +23,11 @@
 								@select="handSelectTeacher">
 							</el-autocomplete>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="advice.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="建议">
 							<el-input type="textarea" :rows="5" v-model="advice.remark"></el-input>
 						</el-form-item>
@@ -38,10 +43,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import TeacherAdvice from '../../../api/TeacherAdvice'
 import Member from '../../../api/Member'
 import Person from '../../../api/Person'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -51,11 +58,15 @@ export default {
 				personId: '',
 				personName: '',
 				remark: ''
-			}
+			},
+			stores: []
 		}
 	},
+	computed: {
+		...mapGetters(['storeId'])
+	},
 	created() {
-		this.getInfo()
+		this.getStores()
 	},
 	methods: {
 		getMembers(queryString, cb) {
@@ -68,6 +79,14 @@ export default {
 				keyword: queryString,
 				type: 'teacher'
 			}).then(res => { cb(res) })
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+				this.getInfo()
+			})
 		},
 		getInfo() {
 			const teacherAdviceId = this.$route.query.teacherAdviceId

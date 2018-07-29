@@ -11,6 +11,9 @@
 						<el-form-item label="老师">
 							<p>{{advice.personName}}</p>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<p>{{advice.store.name}}</p>
+						</el-form-item>
 						<el-form-item label="建议">
 							<p>{{advice.remark}}</p>
 						</el-form-item>
@@ -35,6 +38,7 @@ export default {
 				memberName: '',
 				personId: '',
 				personName: '',
+				store: {},
 				remark: ''
 			}
 		}

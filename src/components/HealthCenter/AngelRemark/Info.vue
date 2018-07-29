@@ -6,13 +6,16 @@
 				<el-row>
 					<el-col :span="12" :offset="5">
                         <el-form-item label="会员">
-                            <p>{{remark.memberName}}</p>
+                            <p>{{angelRemark.memberName}}</p>
 						</el-form-item>
                         <el-form-item label="老师">
-                            <p>{{remark.personName}}</p>
+                            <p>{{angelRemark.personName}}</p>
+						</el-form-item>
+						<el-form-item label="所属门店">
+							<p>{{angelRemark.store.name}}</p>
 						</el-form-item>
                         <el-form-item label="建议">
-                            <p>{{remark.remark}}</p>
+                            <p>{{angelRemark.remark}}</p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -34,7 +37,8 @@ export default {
 				memberId: '',
                 memberName: '',
                 personId: '',
-                personName: '',
+				personName: '',
+				store: {},
                 remark: ''
 			}
 		}

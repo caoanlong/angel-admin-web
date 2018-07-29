@@ -24,7 +24,7 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="所属门店">
-							<el-select style="width: 100%" v-model="doctor.storeId" placeholder="请选择" :disabled="!!storeId">
+							<el-select style="width: 100%" v-model="doctor.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
 								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
 							</el-select>
 						</el-form-item>
@@ -70,7 +70,7 @@ export default {
 	components: { ImageUpload },
 	created() {
 		this.getStores()
-		if (this.storeId) this.doctor.storeId = this.storeId
+		this.doctor.storeId = (this.storeId != null && this.storeId != 'null') ? Number(this.storeId) : ''
 	},
 	methods: {
 		save() {

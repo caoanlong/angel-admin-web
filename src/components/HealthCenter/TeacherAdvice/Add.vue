@@ -23,6 +23,11 @@
 								@select="handSelectTeacher">
 							</el-autocomplete>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="advice.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="建议">
 							<el-input type="textarea" :rows="5" v-model="advice.remark"></el-input>
 						</el-form-item>
@@ -38,10 +43,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import TeacherAdvice from '../../../api/TeacherAdvice'
 import Member from '../../../api/Member'
 import Person from '../../../api/Person'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -51,12 +58,18 @@ export default {
 				personId: '',
 				personName: '',
 				remark: ''
-			}
+			},
+			stores: []
 		}
+	},
+	computed: {
+		...mapGetters(['storeId'])
 	},
 	created() {
 		if (this.$route.query.memberId) this.advice.memberId = this.$route.query.memberId
 		if (this.$route.query.name) this.advice.memberName = this.$route.query.name
+		this.getStores()
+		this.advice.storeId = (this.storeId != null && this.storeId != 'null') ? Number(this.storeId) : ''
 	},
 	methods: {
 		getMembers(queryString, cb) {
@@ -69,6 +82,13 @@ export default {
 				keyword: queryString,
 				type: 'teacher'
 			}).then(res => { cb(res) })
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
 		},
 		handSelectMember(data) {
 			this.advice.memberId = data.memberId

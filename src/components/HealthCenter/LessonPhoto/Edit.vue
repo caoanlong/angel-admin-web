@@ -17,6 +17,11 @@
 								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="lessonPhoto.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="图片">
 							<ImageUpload :files="lessonPhoto.photos" :limitNum="10" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
@@ -32,10 +37,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import LessonPhoto from '../../../api/LessonPhoto'
 import Member from '../../../api/Member'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -43,13 +50,18 @@ export default {
 				title: '',
 				memberId: '',
 				memberName: '',
+				storeId: '',
 				photos: []
-			}
+			},
+			stores: []
 		}
+	},
+	computed: {
+		...mapGetters(['storeId'])
 	},
 	components: { ImageUpload },
 	created() {
-		this.getInfo()
+		this.getStores()
 	},
 	methods: {
 		getMembers(queryString, cb) {
@@ -79,6 +91,14 @@ export default {
 		},
 		handleImageSuccess(res) {
 			this.lessonPhoto.photos = res
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+				this.getInfo()
+			})
 		},
 		back() {
 			this.$router.go(-1)

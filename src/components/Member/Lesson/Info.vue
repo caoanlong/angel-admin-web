@@ -6,19 +6,22 @@
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="会员">
-							<p>{{memLesson.member.name}}</p>
+							<p>{{memLesson.member && memLesson.member.name}}</p>
 						</el-form-item>
 						<el-form-item label="课程名称">
-							<p>{{memLesson.lessonSet.name}}</p>
+							<p>{{memLesson.product.name}}</p>
 						</el-form-item>
 						<el-form-item label="课程类型">
-							<p>{{memLesson.lessonSet.type.value}}</p>
+							<p>{{memLesson.product.label.value}}</p>
 						</el-form-item>
 						<el-form-item label="已上课时">
 							<p>{{memLesson.num}}</p>
 						</el-form-item>
 						<el-form-item label="总课时">
 							<p>{{memLesson.totalNum}}</p>
+						</el-form-item>
+						<el-form-item label="所属门店">
+							<p>{{memLesson.store.name}}</p>
 						</el-form-item>
 						<el-form-item>
 							<el-button @click="back">返回</el-button>
@@ -37,10 +40,10 @@ export default {
 		return {
 			memLesson: {
 				memberName: '',
-				lessonName: '',
-				lessonType: '',
+				product: {label: ''},
 				num: '',
-				totalNum: ''
+				totalNum: '',
+				store: {}
 			}
 		}
 	},

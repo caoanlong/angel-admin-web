@@ -17,6 +17,11 @@
 								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="lessonPhoto.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="图片">
 							<ImageUpload :files="lessonPhoto.photos" :limitNum="10" @imgUrlBack="handleImageSuccess" :fixed="true" />
 						</el-form-item>
@@ -32,10 +37,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import LessonPhoto from '../../../api/LessonPhoto'
 import Member from '../../../api/Member'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -43,25 +50,23 @@ export default {
 				title: '',
 				memberId: '',
 				memberName: '',
+				storeId: '',
 				photos: []
-			}
+			},
+			stores: []
 		}
+	},
+	computed: {
+		...mapGetters(['storeId'])
 	},
 	components: { ImageUpload },
 	created() {
 		if (this.$route.query.memberId) this.lessonPhoto.memberId = this.$route.query.memberId
 		if (this.$route.query.name) this.lessonPhoto.memberName = this.$route.query.name
+		this.getStores()
+		this.lessonPhoto.storeId = (this.storeId != null && this.storeId != 'null') ? Number(this.storeId) : ''
 	},
 	methods: {
-		getMembers(queryString, cb) {
-			Member.suggest({
-				keyword: queryString
-			}).then(res => { cb(res) })
-		},
-		handSelectMember(data) {
-			this.lessonPhoto.memberId = data.memberId
-			this.lessonPhoto.memberName = data.name
-		},
 		save() {
 			const data = Object.assign({}, this.lessonPhoto)
 			data.photos = this.lessonPhoto.photos.join(',')
@@ -70,8 +75,24 @@ export default {
 				this.$router.push({name: 'lessonphoto'})
 			})
 		},
+		handSelectMember(data) {
+			this.lessonPhoto.memberId = data.memberId
+			this.lessonPhoto.memberName = data.name
+		},
 		handleImageSuccess(res) {
 			this.lessonPhoto.photos = res
+		},
+		getMembers(queryString, cb) {
+			Member.suggest({
+				keyword: queryString
+			}).then(res => { cb(res) })
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
+			})
 		},
 		back() {
 			this.$router.go(-1)

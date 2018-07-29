@@ -39,6 +39,11 @@
 								value-format="timestamp">
 							</el-date-picker>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<el-select style="width: 100%" v-model="record.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
+								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
+							</el-select>
+						</el-form-item>
 						<el-form-item label="报告文件">
 							<pdfUpload :file="record.file" @fileUrlBack="handleFileSuccess"/>
 						</el-form-item>
@@ -54,12 +59,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import pdfUpload from '../../CommonComponents/PDFUpload'
 import HealthRecord from '../../../api/HealthRecord'
 import Member from '../../../api/Member'
 import Person from '../../../api/Person'
 import SysDict from '../../../api/SysDict'
+import SysStore from '../../../api/SysStore'
 export default {
 	data() {
 		return {
@@ -70,17 +77,24 @@ export default {
 				personId: '',
 				personName: '',
 				typeId: '',
+				storeId: '',
 				recordDate: '',
 				file: ''
 			},
-			types: []
+			types: [],
+			stores: []
 		}
+	},
+	computed: {
+		...mapGetters(['storeId'])
 	},
 	components: { pdfUpload },
 	created() {
 		if (this.$route.query.memberId) this.record.memberId = this.$route.query.memberId
 		if (this.$route.query.name) this.record.memberName = this.$route.query.name
 		this.getTypes()
+		this.getStores()
+		this.record.storeId = (this.storeId != null && this.storeId != 'null') ? Number(this.storeId) : ''
 	},
 	methods: {
 		getMembers(queryString, cb) {
@@ -97,6 +111,13 @@ export default {
 		getTypes() {
 			SysDict.findListByType({ type: 'recordType' }).then(res => {
 				this.types = res
+			})
+		},
+		getStores() {
+			SysStore.find({
+				pageSize: 1000
+			}).then(res => {
+				this.stores = res.rows
 			})
 		},
 		handSelectMember(data) {

@@ -20,6 +20,9 @@
 						<el-form-item label="报告日期">
 							<p>{{record.recordDate | getdatefromtimestamp(true)}}</p>
 						</el-form-item>
+						<el-form-item label="所属门店">
+							<p>{{record.store.name}}</p>
+						</el-form-item>
 						<el-form-item label="报告文件">
 							<pdfUpload :file="record.file" :isPreview="true"/>
 						</el-form-item>
@@ -46,6 +49,7 @@ export default {
 				personId: '',
 				personName: '',
 				typeId: '',
+				store: '',
 				recordDate: '',
 				file: ''
 			}

@@ -63,6 +63,7 @@ export default {
 				age: '',
 				sex: '',
 				code: '',
+				store: '',
 				storeId: '',
 				parentName: '',
 				parentMobile: '',
