@@ -151,3 +151,9 @@ export function cancelConfirm (id, callback) {
 		Message({ type: 'info', message: '已取消操作'})
 	})
 }
+
+export function resizeImg(url, size) {
+	let arr = url.split('.')
+	return process.env.IMG_URL + arr[0] + size + arr[1]
+}
+
