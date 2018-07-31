@@ -22,6 +22,13 @@ class Member extends Base {
 			})
 		})
 	}
+	addMutiple(data) {
+		return this.request({
+			url: this.baseUrl + '/addMutiple',
+			method: 'post',
+			data
+		})
+	}
 }
 
 export default new Member('/member', request)

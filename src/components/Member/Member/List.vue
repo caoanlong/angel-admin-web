@@ -12,7 +12,7 @@
 				</el-form-item>
 				<el-form-item label="创建时间">
 					<el-date-picker
-						v-model="createRangeDate"
+						v-model="rangeDate"
 						type="daterange" 
 						value-format="timestamp" 
 						range-separator="至"
@@ -29,6 +29,7 @@
 		</div>
 		<div class="tableControl">
 			<el-button type="default" size="mini" icon="el-icon-plus" @click="add">添加</el-button>
+			<upload-excel btnType="default" btnTxt="导入" @on-selected-file="onSelectedFile"/>
 			<el-button type="default" size="mini" icon="el-icon-delete" @click="del">批量删除</el-button>
 		</div>
 		<div class="F-table">
@@ -36,7 +37,7 @@
 				:data="list" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column prop="name" label="学员名" align="center"></el-table-column>
+				<el-table-column prop="name" label="姓名" align="center"></el-table-column>
 				<el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
 				<el-table-column prop="parentName" label="家长姓名" align="center"></el-table-column>
 				<el-table-column prop="parentMobile" label="家长电话" align="center"></el-table-column>
@@ -73,9 +74,19 @@
 import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
-import { deleteConfirm } from '../../../common/utils'
+import UploadExcel from '../../CommonComponents/UploadExcel'
+import { deleteConfirm, validUploadFile } from '../../../common/utils'
 import Member from '../../../api/Member'
 import SysStore from '../../../api/SysStore'
+const memberMap = {
+	'姓名':'name',
+	'手机号':'mobile',
+	'学生编码':'code',
+	'家长姓名':'parentName',
+	'家长手机':'parentMobile',
+	'所属门店':'store',
+	'客户来源':'from'
+}
 export default {
 	data() {
 		return {
@@ -90,19 +101,35 @@ export default {
 			},
 			list: [],
 			stores: [],
-			createRangeDate: []
+			rangeDate: []
 		}
 	},
 	computed: {
 		...mapGetters(['storeId'])
 	},
-	components: { Page },
+	components: { Page, UploadExcel },
 	created() {
 		this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 		this.getList()
 		this.getStores()
 	},
 	methods: {
+		// 选择导入文件
+		onSelectedFile(result) {
+			validUploadFile(result, memberMap, ['编号', '姓名', '手机号', '学生编码', '家长姓名', '家长手机', '所属门店', '客户来源' ]).then(res => {
+				console.log(res)
+				// this.addMutiple(res)
+			}).catch(err => {
+				Message.error(err.toString())
+			})
+		},
+		// 导入
+		addMutiple(data) {
+			Member.addMutiple(data).then(res => {
+				Message.success(res.data.msg)
+				this.getList()
+			})
+		},
 		selectDateRange(date) {
 			this.find.startTime = date[0]
 			this.find.endTime = date[1]
@@ -122,7 +149,7 @@ export default {
 			this.find.endTime = ''
 			this.pageIndex = 1
 			this.pageSize = 10
-			this.createRangeDate = []
+			this.rangeDate = []
 			this.getList()
 		},
 		getList() {

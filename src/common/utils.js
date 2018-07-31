@@ -80,14 +80,14 @@ export function validUploadFile(result, map, propertys) {
 			let j = 1
 			let item = result[i]
 			for (let key in item) {
-				if (!propertys.includes(key)) {
-					return reject(`文件中应不包含“${key}”字段`)
-				}
-				for (let x = 0; x < propertys.length; x++) {
-					if (!item[propertys[x]]) {
-						return reject(`第${i + 1}行，第${j}列不能为空`)
-					}
-				}
+				// if (!propertys.includes(key)) {
+				// 	return reject(`文件中应不包含“${key}”字段`)
+				// }
+				// for (let x = 0; x < propertys.length; x++) {
+				// 	if (!item[propertys[x]]) {
+				// 		return reject(`第${i + 1}行，第${j}列不能为空`)
+				// 	}
+				// }
 				excelConstant[map[key]] = item[key]
 				j++
 			}
@@ -156,4 +156,3 @@ export function resizeImg(url, size) {
 	let arr = url.split('.')
 	return process.env.IMG_URL + arr[0] + size + arr[1]
 }
-
