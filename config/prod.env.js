@@ -2,7 +2,7 @@
 module.exports = {
 	NODE_ENV: '"production"',
 	ENV_CONFIG: '"prod"',
-	BASE_API: '"http://tms.hdd56.com/api"',
-	IMG_API: '"http://www.hdd56.com/hdd/image/"',
-	IMG_URL: '"http://www.hdd56.com/hdd/image/"'
+	BASE_API: '"http://api.app.szjkss.com/admin"',
+	IMG_API: '"http://api.file.szjkss.com"',
+	IMG_URL: '"http://res.file.hdd56.com"'
 }
