@@ -30,7 +30,8 @@
 		<div class="tableControl">
 			<el-button type="default" size="mini" icon="el-icon-plus" @click="add">添加</el-button>
 			<upload-excel btnType="default" btnTxt="导入" @on-selected-file="onSelectedFile"/>
-			<el-button type="default" size="mini" icon="el-icon-delete" @click="del">批量删除</el-button>
+			<a target="_blank" href="http://file.angel.jyw91.com/file/memberTemp.xlsx" download="memberTemp.xlsx" class="exportExcel el-icon-download">下载模版</a>
+			<!-- <el-button type="default" size="mini" icon="el-icon-delete" @click="del">批量删除</el-button> -->
 		</div>
 		<div class="F-table">
 			<el-table 
@@ -81,10 +82,11 @@ import SysStore from '../../../api/SysStore'
 const memberMap = {
 	'姓名':'name',
 	'手机号':'mobile',
+	'性别':'sex',
+	'年龄':'age',
 	'学生编码':'code',
 	'家长姓名':'parentName',
-	'家长手机':'parentMobile',
-	'所属门店':'store',
+	'家长电话':'parentMobile',
 	'客户来源':'from'
 }
 export default {
@@ -116,16 +118,24 @@ export default {
 	methods: {
 		// 选择导入文件
 		onSelectedFile(result) {
-			validUploadFile(result, memberMap, ['编号', '姓名', '手机号', '学生编码', '家长姓名', '家长手机', '所属门店', '客户来源' ]).then(res => {
-				console.log(res)
-				// this.addMutiple(res)
+			validUploadFile(result, memberMap, [
+				'姓名', 
+				'手机号', 
+				'性别', 
+				'年龄', 
+				'学生编码', 
+				'家长姓名', 
+				'家长电话', 
+				'客户来源' 
+			]).then(res => {
+				this.addMutiple(res)
 			}).catch(err => {
 				Message.error(err.toString())
 			})
 		},
 		// 导入
 		addMutiple(data) {
-			Member.addMutiple(data).then(res => {
+			Member.addMutiple({ data }).then(res => {
 				Message.success(res.data.msg)
 				this.getList()
 			})
@@ -213,5 +223,24 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
+.download-btn
+.exportExcel
+	font-size 12px
+	color #606266
+	height 29px
+	line-height 29px
+	padding 0 15px
+	border 1px solid #dcdfe6
+	border-radius 3px
+	background #fff
+	margin-right 10px
+	display inline-block
+	vertical-align top
+	&:hover
+		border-color #c6e2ff
+		color #409eff
+		background #ecf5ff
+	&:active
+		border-color #3a8ee6
+		color #3a8ee6
 </style>

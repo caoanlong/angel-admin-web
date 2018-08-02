@@ -30,6 +30,7 @@ export default {
             const files = e.target.files
             const itemFile = files[0] // only use files[0]
             this.readerData(itemFile)
+            document.getElementById('excel-upload-input').value = ''
         },
         handleUpload() {
             document.getElementById('excel-upload-input').click()

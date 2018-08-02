@@ -18,7 +18,7 @@
 							<p>{{member.age}}</p>
 						</el-form-item>
 						<el-form-item label="性别">
-							<p>{{member.sex == 'male' ? '男' : '女'}}</p>
+							<p>{{member.sex}}</p>
 						</el-form-item>
 						<el-form-item label="编码">
 							<p>{{member.code}}</p>

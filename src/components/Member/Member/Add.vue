@@ -19,8 +19,8 @@
 						</el-form-item>
 						<el-form-item label="性别">
 							<el-select style="width:100%" v-model="member.sex">
-								<el-option label="男" value="male"></el-option>
-								<el-option label="女" value="female"></el-option>
+								<el-option label="男" value="男"></el-option>
+								<el-option label="女" value="女"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item label="编码">
