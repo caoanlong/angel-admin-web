@@ -17,7 +17,7 @@
 								@select="handSelectMember">
 							</el-autocomplete>
 						</el-form-item>
-						<el-form-item label="老师">
+						<el-form-item label="医生">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
 								v-model="record.personName"

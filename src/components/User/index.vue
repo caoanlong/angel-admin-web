@@ -46,6 +46,7 @@ export default {
                 avatar: this.user.avatar
             }).then(res => {
 				Message.success(res.data.msg)
+				this.$store.dispatch('getUserInfo')
             	this.$router.go(-1)
 			})
         },

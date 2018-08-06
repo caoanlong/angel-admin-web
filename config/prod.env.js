@@ -4,5 +4,5 @@ module.exports = {
 	ENV_CONFIG: '"prod"',
 	BASE_API: '"http://api.app.szjkss.com/admin"',
 	IMG_API: '"http://api.file.szjkss.com"',
-	IMG_URL: '"http://res.file.hdd56.com"'
+	IMG_URL: '"http://res.file.szjkss.com"'
 }

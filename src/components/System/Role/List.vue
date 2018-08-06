@@ -32,7 +32,7 @@
 				@selection-change="selectionChange" 
 				border style="width: 100%" 
 				size="mini" stripe>
-				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
+				<el-table-column label="id" type="selection" align="center" width="40" :selectable="row => row.roleId != '1'"></el-table-column>
 				<el-table-column prop="name" label="角色名称"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center">
 					<template slot-scope="scope">

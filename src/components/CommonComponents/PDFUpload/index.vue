@@ -4,7 +4,7 @@
 			<img src="../../../assets/imgs/pdf.svg">
 			<div class="controller">
 				<div class="controllerBtn">
-					<a class="perviewBtn" target="_blank" :href="'http://file.angel.jyw91.com/' + file"></a>
+					<a class="perviewBtn" target="_blank" :href="'http://res.file.szjkss.com' + file"></a>
 					<div class="delBtn" @click.stop="delImg()" v-if="!isPreview"></div>
 				</div>
 			</div>

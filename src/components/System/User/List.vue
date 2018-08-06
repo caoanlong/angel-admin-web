@@ -48,7 +48,7 @@
                 @selection-change="selectionChange" 
                 border style="width: 100%" 
                 size="mini" stripe>
-				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
+				<el-table-column label="id" type="selection" align="center" width="40" :selectable="row => row.userId != '1'"></el-table-column>
 				<el-table-column prop="name" label="姓名"></el-table-column>
 				<el-table-column prop="mobile" label="电话" align="center" width="100"></el-table-column>
                 <el-table-column prop="role.name" label="角色" align="center"></el-table-column>
@@ -70,10 +70,10 @@
 					</template>
 				</el-table-column>
 				<el-table-column width="180" align="center" fixed="right">
-					<template slot-scope="scope">
-						<el-button type="success" size="mini" @click="view(scope.row.userId)" v-if="scope.row.name != 'admin'">查看</el-button>
-						<el-button type="primary" size="mini" @click="edit(scope.row.userId)" v-if="scope.row.name != 'admin'">编辑</el-button>
-						<el-button type="danger" size="mini" @click="del(scope.row.userId)" v-if="scope.row.name != 'admin'">删除</el-button>
+					<template slot-scope="scope" v-if="scope.row.userId != '1'">
+						<el-button type="success" size="mini" @click="view(scope.row.userId)">查看</el-button>
+						<el-button type="primary" size="mini" @click="edit(scope.row.userId)">编辑</el-button>
+						<el-button type="danger" size="mini" @click="del(scope.row.userId)">删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
