@@ -48,7 +48,7 @@
 					</template>
 				</el-table-column>
 				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
-				<el-table-column prop="remark" label="简介" align="center"></el-table-column>
+				<el-table-column prop="remark" label="简介" :show-overflow-tooltip="true" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>

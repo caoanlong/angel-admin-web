@@ -38,7 +38,7 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center"></el-table-column>
+				<el-table-column prop="name" label="名称" :show-overflow-tooltip="true" align="center"></el-table-column>
 				<el-table-column prop="label.value" label="类型" align="center"></el-table-column>
 				<el-table-column prop="price" label="价格" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">

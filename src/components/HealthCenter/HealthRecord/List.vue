@@ -43,7 +43,7 @@
 				size="mini" stripe 
 				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center"></el-table-column>
+				<el-table-column prop="name" label="名称" :show-overflow-tooltip="true" align="center"></el-table-column>
 				<el-table-column prop="member.name" label="会员" align="center" width="90"></el-table-column>
 				<el-table-column prop="person.name" label="医生" align="center" width="90"></el-table-column>
 				<el-table-column prop="type.value" label="类型" align="center" width="90"></el-table-column>

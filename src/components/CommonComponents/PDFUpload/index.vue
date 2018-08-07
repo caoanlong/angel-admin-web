@@ -10,7 +10,10 @@
 			</div>
 		</div>
 		<div class="addBtn" :style="{'width':width+'px','height':height+'px'}" v-else>
-			<div class="addIcon">
+			<div class="loadIcon" v-if="isLoading">
+				<svg-icon icon-class="loading"></svg-icon>
+			</div>
+			<div class="addIcon" v-else>
 				<i style="font-size: 30px; position: relative; top: 10px" class="el-icon-plus avatar-uploader-icon"></i>
 			</div>
 			<input type="file" name="" @change.stop="addImg" ref="uploadFile"/>
@@ -42,6 +45,7 @@ export default {
     },
     data() {
         return {
+			isLoading: false
         }
 	},
     methods: {
@@ -58,12 +62,14 @@ export default {
             }
         },
         uploadFile(data) {
+			this.isLoading = true
             const url = `${this.fileApi}/upload/single`
             const headers = {'Content-type':'multipart/form-data;charset=UTF-8'}
             const params = formDataReq({ "file": data })
             // axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
             axios.post(url, params, headers).then(res => {
-                this.$emit('fileUrlBack', res.data.data)
+				this.$emit('fileUrlBack', res.data.data)
+				this.isLoading = false
             }).catch(err => {
                 console.log('服务器异常' + err)
             })
@@ -146,6 +152,22 @@ export default {
 				margin auto
 				width 100%
 				height 52px
+			.loadIcon
+				position absolute
+				left 0
+				top 0
+				right 0
+				bottom 0
+				margin auto
+				width 100%
+				height 52px
+				line-height 52px
+				font-size 36px
+				-webkit-transform rotate(360deg)
+				animation rotation 3s linear infinite
+				-moz-animation rotation 3s linear infinite
+				-webkit-animation rotation 3s linear infinite
+				-o-animation rotation 3s linear infinite
 			input
 				display block
 				width 100%
@@ -154,4 +176,9 @@ export default {
 .userFace
 	.imgLi
 		margin 0
+@-webkit-keyframes rotation
+	from
+		-webkit-transform rotate(0deg)
+	to
+		-webkit-transform rotate(360deg)
 </style>

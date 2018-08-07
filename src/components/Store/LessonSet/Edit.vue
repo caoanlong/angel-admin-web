@@ -14,7 +14,9 @@
 							</el-select>
 						</el-form-item>
 						<el-form-item label="使用有效期">
-							<el-input v-model="lesson.validDate"></el-input>
+							<el-input v-model="lesson.validDate">
+								<template slot="append">天</template>
+							</el-input>
 						</el-form-item>
 						<el-form-item label="价格">
 							<el-input v-model="lesson.price"></el-input>

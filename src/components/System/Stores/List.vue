@@ -35,7 +35,7 @@
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
 				<el-table-column label="名称" prop="name"></el-table-column>
 				<el-table-column label="电话" prop="mobile"></el-table-column>
-				<el-table-column label="简介" prop="remark"></el-table-column>
+				<el-table-column label="简介" prop="remark" :show-overflow-tooltip="true"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>

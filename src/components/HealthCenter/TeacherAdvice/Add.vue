@@ -2,33 +2,39 @@
 	<div class="main-content">
 		<el-card class="box-card">
 			<div slot="header">添加老师建议</div>
-			<el-form label-width="120px">
+			<el-form label-width="120px" :model="advice" :rules="rules" ref="ruleForm">
 				<el-row>
 					<el-col :span="14" :offset="4">
-						<el-form-item label="会员">
+						<el-form-item label="会员" prop="memberId">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
 								v-model="advice.memberName"
 								:fetch-suggestions="getMembers"
 								placeholder="请输入..."
 								@select="handSelectMember">
+								<template slot-scope="{ item }">
+									<div>{{ item.name }}<span style="font-size:13px;color:#999">({{ item.mobile }})</span></div>
+								</template>
 							</el-autocomplete>
 						</el-form-item>
-						<el-form-item label="老师">
+						<el-form-item label="老师" prop="personId">
 							<el-autocomplete style="width:100%"
 								value-key="name" 
 								v-model="advice.personName"
 								:fetch-suggestions="getTeachers"
 								placeholder="请输入..."
 								@select="handSelectTeacher">
+								<template slot-scope="{ item }">
+									<div>{{ item.name }}<span style="font-size:13px;color:#999">({{ item.mobile }})</span></div>
+								</template>
 							</el-autocomplete>
 						</el-form-item>
-						<el-form-item label="所属门店">
+						<el-form-item label="所属门店" prop="storeId">
 							<el-select style="width: 100%" v-model="advice.storeId" placeholder="请选择" :disabled="storeId != null && storeId != 'null'">
 								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="建议">
+						<el-form-item label="建议" prop="remark">
 							<el-input type="textarea" :rows="5" v-model="advice.remark"></el-input>
 						</el-form-item>
 						<el-form-item>
@@ -59,7 +65,16 @@ export default {
 				personName: '',
 				remark: ''
 			},
-			stores: []
+			stores: [],
+			rules: {
+				memberId: [{ required: true, message: '请选择学生'}],
+				storeId: [{ required: true, message: '请选择门店'}],
+				personId: [{ required: true, message: '请选择老师'}],
+				remark: [
+					{ required: true, message: '请输入建议'},
+					{ min: 1, max: 50, message: '长度在1到200之间'}
+				]
+			}
 		}
 	},
 	computed: {
@@ -99,9 +114,12 @@ export default {
 			this.advice.personName = data.name
 		},
 		save() {
-			TeacherAdvice.add(this.advice).then(res => {
-				Message.success('成功！')
-				this.$router.push({name: 'teacheradvice'})
+			this.$refs['ruleForm'].validate(valid => {
+				if (!valid) return
+				TeacherAdvice.add(this.advice).then(res => {
+					Message.success('成功！')
+					this.$router.push({name: 'teacheradvice'})
+				})
 			})
 		},
 		back() {

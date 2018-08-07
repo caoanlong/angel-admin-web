@@ -39,7 +39,7 @@
 				size="mini" stripe 
 				@selection-change="selectionChange">
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="title" label="标题" align="center"></el-table-column>
+				<el-table-column prop="title" label="标题" :show-overflow-tooltip="true" align="center"></el-table-column>
 				<el-table-column prop="member.name" label="学生" align="center"></el-table-column>
 				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间" align="center"  width="140">

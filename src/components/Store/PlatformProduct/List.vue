@@ -33,11 +33,7 @@
 				border style="width: 100%" 
 				size="mini" stripe>
 				<el-table-column label="id" type="selection" align="center" width="40"></el-table-column>
-				<el-table-column prop="name" label="名称" align="center">
-					<template slot-scope="scope">
-						<span class="overflow-ellipsis-simple">{{scope.row.name}}</span>
-					</template>
-				</el-table-column>
+				<el-table-column prop="name" label="名称" :show-overflow-tooltip="true" align="center"></el-table-column>
 				<el-table-column prop="expressType.value" label="快递" align="center" width="120"></el-table-column>
 				<el-table-column prop="freight" label="运费" align="center" width="120">
 					<template slot-scope="scope">
