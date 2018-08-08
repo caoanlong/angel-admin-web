@@ -2,25 +2,25 @@
     <div class="main-content">
 		<el-card class="box-card">
 			<div slot="header">编辑用户</div>
-			<el-form label-width="120px">
+			<el-form label-width="120px" :model="user" :rules="rules" ref="ruleForm">
 				<el-row>
 					<el-col :span="14" :offset="4">
 						<el-form-item label="头像">
 							<ImageUpload :files="[user.avatar]" @imgUrlBack="handleAvatarSuccess" :fixed="true" :isUseCropper="true"/>
 						</el-form-item>
-						<el-form-item label="姓名">
+						<el-form-item label="姓名" prop="name">
 							<el-input v-model="user.name"></el-input>
 						</el-form-item>
-						<el-form-item label="手机号码">
+						<el-form-item label="手机号码" prop="mobile">
 							<el-input v-model="user.mobile"></el-input>
 						</el-form-item>
-						<el-form-item label="密码">
+						<el-form-item label="密码" prop="password">
 							<el-input v-model="user.password"></el-input>
 						</el-form-item>
 						<el-form-item label="是否禁用">
 							<el-switch v-model="user.isDisabled"></el-switch>
 						</el-form-item>
-						<el-form-item label="所属门店">
+						<el-form-item label="所属门店" prop="storeId">
 							<el-select style="width: 100%" v-model="user.storeId" placeholder="请选择">
 								<el-option v-for="store in stores" :key="store.storeId" :label="store.name" :value="store.storeId"></el-option>
 							</el-select>
@@ -47,6 +47,7 @@ import ImageUpload from '../../CommonComponents/ImageUpload'
 import SysUser from '../../../api/SysUser'
 import SysRole from '../../../api/SysRole'
 import SysStore from '../../../api/SysStore'
+import { checkPassword, checkMobile } from '../../../common/validator'
 export default {
     data() {
 		return {
@@ -60,7 +61,19 @@ export default {
 				avatar: ''
 			},
 			roles: [],
-			stores: []
+			stores: [],
+			rules: {
+				name: [
+					{ required: true, message: '请输入姓名' },
+					{ min: 1, max: 20, message: '长度在1到20之间' }
+				],
+				mobile: [
+					{ required: true, message: '请输入手机号' },
+					{ validator: checkMobile }
+				],
+				password: [ { validator: checkPassword } ],
+				storeId: [{ required: true, message: '请选择门店' }]
+			}
 		}
     },
 	components: { ImageUpload },
@@ -70,9 +83,12 @@ export default {
 	},
     methods: {
         save() {
-			SysUser.update(this.user).then(res => {
-				Message.success(res.data.msg)
-            	this.$router.push({name: 'user'})
+			this.$refs['ruleForm'].validate(valid => {
+				if (!valid) return
+				SysUser.update(this.user).then(res => {
+					Message.success(res.data.msg)
+					this.$router.push({name: 'user'})
+				})
 			})
         },
         handleAvatarSuccess(res) {

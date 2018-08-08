@@ -2,24 +2,24 @@
 	<div class="main-content">
 		<el-card class="box-card">
 			<div slot="header">编辑产品</div>
-			<el-form label-width="120px">
+			<el-form label-width="120px" :model="product" :rules="rules" ref="ruleForm">
 				<el-row>
 					<el-col :span="18" :offset="2">
-						<el-form-item label="名称">
+						<el-form-item label="名称" prop="name">
 							<el-input v-model="product.name"></el-input>
 						</el-form-item>
-						<el-form-item label="运费">
+						<el-form-item label="运费" prop="freight">
 							<el-input v-model="product.freight"></el-input>
 						</el-form-item>
-						<el-form-item label="快递类型">
+						<el-form-item label="快递类型" prop="expressTypeId">
 							<el-select style="width: 100%" placeholder="请选择" v-model="product.expressTypeId">
 								<el-option v-for="item in types" :label="item.value" :value="item.dictId" :key="item.dictId"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="价格">
+						<el-form-item label="价格" prop="price">
 							<el-input v-model="product.price"></el-input>
 						</el-form-item>
-						<el-form-item label="图片">
+						<el-form-item label="图片" prop="image">
 							<ImageUpload :files="[product.image]" @imgUrlBack="handleImageSuccess" :isUseCropper="true"/>
 						</el-form-item>
 						<el-form-item label="详情">
@@ -42,6 +42,7 @@ import E from 'wangeditor'
 import ImageUpload from '../../CommonComponents/ImageUpload'
 import Product from '../../../api/Product'
 import SysDict from '../../../api/SysDict'
+import { checkFloat2, checkInt, checkFloatZero2 } from '../../../common/validator'
 export default {
 	data() {
 		return {
@@ -55,7 +56,20 @@ export default {
                 price: '',
                 remark: ''
 			},
-			types: []
+			types: [],
+			rules: {
+				name: [
+					{ required: true, message: '请输入名称' },
+					{ min: 1, max: 50, message: '长度在1到50之间' }
+				],
+				freight: [ { validator: checkFloatZero2 } ],
+				expressTypeId: [{ required: true, message: '请选择快递类型' }],
+				price: [
+					{ required: true, message: '请输入价格' },
+					{ validator: checkFloat2 }
+				],
+				image: [{ required: true, message: '请选择图片' }]
+			}
 		}
 	},
 	components: { ImageUpload },
@@ -83,9 +97,12 @@ export default {
 		save() {
 			const data = this.product
 			data.remark = this.editor.txt.html()
-			Product.update(data).then(res => {
-				Message.success('成功！')
-				this.$router.push({name: 'platformproduct'})
+			this.$refs['ruleForm'].validate(valid => {
+				if (!valid) return
+				Product.update(data).then(res => {
+					Message.success('成功！')
+					this.$router.push({name: 'platformproduct'})
+				})
 			})
 		},
 		handleImageSuccess(res) {

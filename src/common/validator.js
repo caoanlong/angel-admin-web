@@ -92,11 +92,44 @@ export function checkURL(rule, value, callback) {
 	}
 }
 
-
+export const checkInt = (rule, value, callback) => {
+	const r = /^[1-9]\d*$/
+	if (r.test(value)) {
+		callback()
+	} else {
+		callback(new Error('请输入正确的数字'))
+	}
+}
+export const checkAge = (rule, value, callback) => {
+	const r = /^[1-9]\d?$/
+	if (r.test(value)) {
+		callback()
+	} else {
+		callback(new Error('请输入正确的年龄'))
+	}
+}
+export const checkPassword = (rule, value, callback) => {
+	const r = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$/
+	if (value == null || r.test(value)) {
+		callback()
+	} else {
+		callback(new Error('最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符'))
+	}
+}
 // 验证非负浮点数（正浮点数 + 0） 2位小数
+export const checkFloatZero2 = (rule, value, callback) => {
+	const r = /(^[1-9]\d*\.\d{1,2}$)|(^0{1}\.\d{1,2}$)|(^[1-9]\d*$)|^0$/
+	if (r.test(value)) {
+		callback()
+	} else {
+		callback(new Error('请输入正确的数字'))
+	}
+}
+
+// 验证非负浮点数（正浮点数） 2位小数
 export const checkFloat2 = (rule, value, callback) => {
-	let r = /^[0-9]+(.[0-9]{1,2})?$/
-	if (r.test(value) || value == 0) {
+	const r = /(^[1-9]\d*\.\d{1,2}$)|(^0{1}\.\d{1,2}$)|(^[1-9]\d*$)/
+	if (r.test(value)) {
 		callback()
 	} else {
 		callback(new Error('请输入正确的数字'))
@@ -104,7 +137,7 @@ export const checkFloat2 = (rule, value, callback) => {
 }
 // 验证非负浮点数（正浮点数 + 0） 6位小数
 export const checkFloat6 = (rule, value, callback) => {
-	let r = /^[0-9]+(.[0-9]{1,6})?$/
+	const r = /^[0-9]+(.[0-9]{1,6})?$/
 	if (r.test(value) || value == 0) {
 		callback()
 	} else {
@@ -116,7 +149,7 @@ export const checkIDCard = (rule, value, callback) => {
 	if (!value) {
 		callback(new Error('身份证号不能为空'))
 	}
-	let regIdNo = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+	const regIdNo = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
 	if(!regIdNo.test(value)){  
 		callback(new Error('请输入正确的身份证号'))
 	} else {

@@ -2,10 +2,10 @@
     <div class="main-content">
 		<el-card class="box-card">
 			<div slot="header">编辑角色</div>
-			<el-form label-width="120px">
+			<el-form label-width="120px" :model="role" :rules="rules" ref="ruleForm">
 				<el-row>
 					<el-col :span="14" :offset="4">
-						<el-form-item label="角色名称">
+						<el-form-item label="角色名称" prop="name">
 							<el-input v-model="role.name"></el-input>
 						</el-form-item>
 						<el-form-item>
@@ -25,7 +25,13 @@ import SysRole from '../../../api/SysRole'
 export default {
     data() {
 		return {
-			role: { name: '' }
+			role: { name: '' },
+			rules: {
+				name: [
+					{ required: true, message: '请输入名称' },
+					{ min: 1, max: 50, message: '长度在1到50之间' }
+				]
+			}
 		}
 	},
 	created() {
@@ -40,9 +46,12 @@ export default {
 		},
         save() {
 			const roleId = this.$route.query.roleId
-			SysRole.update(this.role).then(res => {
-				Message.success(res.data.msg)
-            	this.$router.push({name: 'role'})
+			this.$refs['ruleForm'].validate(valid => {
+				if (!valid) return
+				SysRole.update(this.role).then(res => {
+					Message.success(res.data.msg)
+					this.$router.push({name: 'role'})
+				})
 			})
         },
         back() {
