@@ -3,7 +3,7 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="用户名/手机号" v-model="find.keywords"></el-input>
+					<el-input placeholder="用户名/手机号" v-model="find.keyword"></el-input>
 				</el-form-item>
 				<el-form-item label="所属门店" v-if="storeId == null || storeId == 'null'">
 					<el-select style="width: 100%" v-model="find.storeId" placeholder="请选择">
@@ -96,7 +96,7 @@ export default {
 			pageSize: 10,
 			count: 10,
 			find: {
-				keywords: '',
+				keyword: '',
 				storeId: '',
 				startTime: '',
 				endTime: ''

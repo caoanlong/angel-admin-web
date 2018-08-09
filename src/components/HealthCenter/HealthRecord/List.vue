@@ -3,7 +3,7 @@
 		<div class="search">
 			<el-form :inline="true" class="demo-form-inline" size="small">
 				<el-form-item label="关键字">
-					<el-input placeholder="名称/会员/老师" v-model="find.keywords"></el-input>
+					<el-input placeholder="名称/会员/医生" v-model="find.keyword"></el-input>
 				</el-form-item>
                 <el-form-item label="类型">
 					<el-select placeholder="请选择" v-model="find.typeId">
@@ -92,11 +92,11 @@ export default {
 			count: 0,
 			selectedList: [],
 			find: {
-				keywords: '',
+				keyword: '',
 				typeId: '',
 				storeId: '',
-				startDate: '',
-				endDate: ''
+				startTime: '',
+				endTime: ''
 			},
 			list: [],
 			rangeDate: [],
@@ -116,8 +116,8 @@ export default {
 	},
 	methods: {
 		selectDateRange(date) {
-			this.find.startDate = date[0]
-			this.find.endDate = date[1]
+			this.find.startTime = date[0]
+			this.find.endTime = date[1]
 		},
 		selectionChange(data) {
 			this.selectedList = data.map(item => item.healthRecordId)
