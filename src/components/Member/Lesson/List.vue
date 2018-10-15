@@ -70,7 +70,7 @@ export default {
 		return {
 			pageIndex: 1,
 			pageSize: 10,
-			count: 10,
+			count: 0,
 			find: {
 				keywords: '',
 				storeId: '',

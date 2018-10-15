@@ -41,20 +41,37 @@
 				<el-table-column prop="member.name" label="会员姓名" align="center"></el-table-column>
 				<el-table-column prop="member.mobile" label="手机号" align="center"></el-table-column>
 				<el-table-column prop="store.name" label="所属门店" align="center"></el-table-column>
-				<el-table-column prop="status" label="考勤状态" align="center">
-					<template slot-scope="scope">
-						<el-tag size="mini" type="success" v-if="scope.row.status == 'success'">打卡成功</el-tag>
-						<el-tag size="mini" type="info" v-else>打卡失败</el-tag>
-					</template>
-				</el-table-column>
 				<el-table-column prop="createTime" label="考勤时间" align="center">
 					<template slot-scope="scope">
 						<span v-if="scope.row.createTime">{{ new Date(scope.row.createTime).getTime() | getdatefromtimestamp()}}</span>
 					</template>
 				</el-table-column>
+				<el-table-column prop="status" label="考勤状态" align="center">
+					<template slot-scope="scope">
+						<el-tag size="mini" type="success" v-if="scope.row.status == 'success'">打卡成功</el-tag>
+						<el-tag size="mini" type="warning" v-else>待确认</el-tag>
+					</template>
+				</el-table-column>
+				<el-table-column width="180" align="center" fixed="right">
+					<template slot-scope="scope">
+						<el-button 
+							v-if="scope.row.status == 'confirm'"
+							type="primary" 
+							size="mini" 
+							@click="confirm(scope.row.attendanceId, scope.row.member.memberId)">
+							确认打卡
+						</el-button>
+					</template>
+				</el-table-column>
 			</el-table>
 			<Page :total="count" :pageSize="pageSize" @pageChange="pageChange" @pageSizeChange="pageSizeChange"/>
 		</div>
+		<confirm-dialog 
+			:isVisible="isConfirmVisible" 
+			:callback="confirmCallback" 
+			:attendanceId="currentAttendanceId" 
+			:memberId="currentMemberId">
+		</confirm-dialog>
 	</div>
 </template>
 
@@ -62,6 +79,7 @@
 import { mapGetters } from 'vuex'
 import { Message } from 'element-ui'
 import Page from '../../CommonComponents/Page'
+import ConfirmDialog from './components/ConfirmDialog'
 import Attendance from '../../../api/Attendance'
 import SysStore from '../../../api/SysStore'
 export default {
@@ -79,13 +97,16 @@ export default {
 			},
 			list: [],
 			stores: [],
-			createRangeDate: []
+			createRangeDate: [],
+			isConfirmVisible: false,
+			currentAttendanceId: '',
+			currentMemberId: ''
 		}
 	},
 	computed: {
 		...mapGetters(['storeId'])
 	},
-	components: { Page },
+	components: { Page, ConfirmDialog },
 	created() {
 		this.find.storeId = (this.storeId != null && this.storeId != 'null') ? this.storeId : ''
 		this.getList()
@@ -131,6 +152,17 @@ export default {
 		},
 		view() {
 			this.$router.push({name: 'viewattendance'})
+		},
+		confirmCallback(bool) {
+			console.log(bool)
+			this.isConfirmVisible = false
+			bool && this.getList()
+		},
+		confirm(attendanceId, memberId) {
+			console.log(attendanceId, memberId)
+			this.isConfirmVisible = true
+			this.currentAttendanceId = attendanceId
+			this.currentMemberId = memberId
 		},
 		getStores() {
 			SysStore.find({
