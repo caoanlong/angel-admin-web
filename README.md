@@ -1,6 +1,6 @@
-# anger_admin_h5
+# angel-admin-web
 
-> A Vue.js project
+> A CMS about Angel Education with Vue.js
 
 ## Build Setup
 
